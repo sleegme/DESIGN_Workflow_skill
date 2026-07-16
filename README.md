@@ -89,6 +89,9 @@ Run the dependency-free checks:
 ```bash
 python scripts/validate_skill.py .
 python scripts/test_routing_cases.py
+
+# Before packaging or installing the skill directory:
+python scripts/validate_skill.py --strict-directory-name .
 ```
 
 For an official format check, also run:
