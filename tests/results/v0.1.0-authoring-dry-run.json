@@ -1,0 +1,178 @@
+{
+  "version": "0.1.0",
+  "date": "2026-07-16",
+  "runner": "GPT-5.6 Thinking authoring-session semantic dry run",
+  "scope": "Route selection after the skill is loaded; not a cross-client activation benchmark.",
+  "cases": [
+    {
+      "id": "P01",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "P02",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "P03",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "P04",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "P05",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "P06",
+      "observed_route": "preserve",
+      "pass": true
+    },
+    {
+      "id": "E01",
+      "observed_route": "expand",
+      "pass": true
+    },
+    {
+      "id": "E02",
+      "observed_route": "expand",
+      "pass": true
+    },
+    {
+      "id": "E03",
+      "observed_route": "expand",
+      "pass": true
+    },
+    {
+      "id": "E04",
+      "observed_route": "expand",
+      "pass": true
+    },
+    {
+      "id": "C01",
+      "observed_route": "create",
+      "pass": true
+    },
+    {
+      "id": "C02",
+      "observed_route": "create",
+      "pass": true
+    },
+    {
+      "id": "C03",
+      "observed_route": "create",
+      "pass": true
+    },
+    {
+      "id": "C04",
+      "observed_route": "create",
+      "pass": true
+    },
+    {
+      "id": "R01",
+      "observed_route": "redesign",
+      "pass": true
+    },
+    {
+      "id": "R02",
+      "observed_route": "redesign",
+      "pass": true
+    },
+    {
+      "id": "R03",
+      "observed_route": "redesign",
+      "pass": true
+    },
+    {
+      "id": "R04",
+      "observed_route": "redesign",
+      "pass": true
+    },
+    {
+      "id": "Q01",
+      "observed_route": "critique",
+      "pass": true
+    },
+    {
+      "id": "Q02",
+      "observed_route": "critique",
+      "pass": true
+    },
+    {
+      "id": "Q03",
+      "observed_route": "critique",
+      "pass": true
+    },
+    {
+      "id": "Q04",
+      "observed_route": "critique",
+      "pass": true
+    },
+    {
+      "id": "B01",
+      "observed_route": "brand-check",
+      "pass": true
+    },
+    {
+      "id": "B02",
+      "observed_route": "brand-check",
+      "pass": true
+    },
+    {
+      "id": "B03",
+      "observed_route": "brand-check",
+      "pass": true
+    },
+    {
+      "id": "B04",
+      "observed_route": "brand-check",
+      "pass": true
+    },
+    {
+      "id": "T01",
+      "observed_route": "translate",
+      "pass": true
+    },
+    {
+      "id": "T02",
+      "observed_route": "translate",
+      "pass": true
+    },
+    {
+      "id": "T03",
+      "observed_route": "translate",
+      "pass": true
+    },
+    {
+      "id": "T04",
+      "observed_route": "translate",
+      "pass": true
+    },
+    {
+      "id": "D01",
+      "observed_route": "profile",
+      "pass": true
+    },
+    {
+      "id": "D02",
+      "observed_route": "profile",
+      "pass": true
+    },
+    {
+      "id": "D03",
+      "observed_route": "profile",
+      "pass": true
+    },
+    {
+      "id": "D04",
+      "observed_route": "profile",
+      "pass": true
+    }
+  ]
+}

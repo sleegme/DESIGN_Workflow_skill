@@ -1,0 +1,308 @@
+[
+  {
+    "id": "P01",
+    "prompt": "Keep the current dashboard layout and fix the cramped spacing.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "layout explicitly fixed"
+  },
+  {
+    "id": "P02",
+    "prompt": "Modernize this checkout page but don't change the information hierarchy.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "modernize is not redesign; hierarchy fixed"
+  },
+  {
+    "id": "P03",
+    "prompt": "Make the existing slide deck more polished and consistent.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "polish existing artifact"
+  },
+  {
+    "id": "P04",
+    "prompt": "Fix the mobile overflow and keyboard focus in this UI.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "implementation defects"
+  },
+  {
+    "id": "P05",
+    "prompt": "Match the button colors to the approved brand guide.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "alignment to governing evidence"
+  },
+  {
+    "id": "P06",
+    "prompt": "This feels AI-generated. Remove the unnecessary decorative cards, but keep the structure.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "local correction with structure fixed"
+  },
+  {
+    "id": "E01",
+    "prompt": "Add a settings screen that looks like it has always belonged to this app.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new screen inherits existing system"
+  },
+  {
+    "id": "E02",
+    "prompt": "Add one Q4 summary slide using the same deck template.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new slide in existing system"
+  },
+  {
+    "id": "E03",
+    "prompt": "Create an empty state for the current table without changing the table design.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new state matching current component"
+  },
+  {
+    "id": "E04",
+    "prompt": "Extend this poster campaign with a subway ad in the same visual language.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new asset in same campaign"
+  },
+  {
+    "id": "C01",
+    "prompt": "We have no visual identity yet. Design a landing page for a scientific annotation tool.",
+    "artifact": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "no existing design"
+  },
+  {
+    "id": "C02",
+    "prompt": "Create a new conference poster from this text brief.",
+    "artifact": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new artifact"
+  },
+  {
+    "id": "C03",
+    "prompt": "Design the first version of a mobile habit tracker; there are no mockups.",
+    "artifact": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new product design"
+  },
+  {
+    "id": "C04",
+    "prompt": "Make a fresh data-visualization style guide from the supplied dataset and editorial brief.",
+    "artifact": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new design system"
+  },
+  {
+    "id": "R01",
+    "prompt": "Discard the current visual direction and redesign the site from scratch.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "explicit replacement"
+  },
+  {
+    "id": "R02",
+    "prompt": "Completely rethink the layout as an editorial product, but keep the copy.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "explicit structural rethink"
+  },
+  {
+    "id": "R03",
+    "prompt": "Rebrand this app and replace the existing color, type, and component language.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "explicit brand replacement"
+  },
+  {
+    "id": "R04",
+    "prompt": "Explore a fundamentally different concept and do not preserve the current composition.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "explicit non-preservation"
+  },
+  {
+    "id": "Q01",
+    "prompt": "Why does this dashboard feel generic? Don't edit it yet.",
+    "artifact": true,
+    "expected_route": "critique",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "analysis only"
+  },
+  {
+    "id": "Q02",
+    "prompt": "Compare these two poster versions and explain which communicates better.",
+    "artifact": true,
+    "expected_route": "critique",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "comparison only"
+  },
+  {
+    "id": "Q03",
+    "prompt": "Review the hierarchy and accessibility of this screen.",
+    "artifact": true,
+    "expected_route": "critique",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "review request"
+  },
+  {
+    "id": "Q04",
+    "prompt": "Diagnose why the current design no longer matches the reference.",
+    "artifact": true,
+    "expected_route": "critique",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "diagnosis without implementation"
+  },
+  {
+    "id": "B01",
+    "prompt": "Audit these slides against the supplied brand guide.",
+    "artifact": true,
+    "expected_route": "brand-check",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "brand consistency audit"
+  },
+  {
+    "id": "B02",
+    "prompt": "Check whether the campaign assets use the logo, color, and typography correctly.",
+    "artifact": true,
+    "expected_route": "brand-check",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "brand audit"
+  },
+  {
+    "id": "B03",
+    "prompt": "Find visual inconsistencies across these product screens.",
+    "artifact": true,
+    "expected_route": "brand-check",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "system consistency audit"
+  },
+  {
+    "id": "B04",
+    "prompt": "Verify this chart style follows the organization's visualization standards.",
+    "artifact": true,
+    "expected_route": "brand-check",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "standards audit"
+  },
+  {
+    "id": "T01",
+    "prompt": "Turn this horizontal poster into a vertical social story while keeping the campaign identity.",
+    "artifact": true,
+    "expected_route": "translate",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new aspect ratio and medium"
+  },
+  {
+    "id": "T02",
+    "prompt": "Convert this web dashboard into a printable A4 report.",
+    "artifact": true,
+    "expected_route": "translate",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "interactive to print"
+  },
+  {
+    "id": "T03",
+    "prompt": "Adapt this slide into a 15-second motion graphic.",
+    "artifact": true,
+    "expected_route": "translate",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "static to video"
+  },
+  {
+    "id": "T04",
+    "prompt": "Recompose the desktop screen for a watch-sized interface without rebranding it.",
+    "artifact": true,
+    "expected_route": "translate",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "platform translation"
+  },
+  {
+    "id": "D01",
+    "prompt": "Extract a DESIGN.md from the current components and screenshots.",
+    "artifact": true,
+    "expected_route": "profile",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "derive design documentation"
+  },
+  {
+    "id": "D02",
+    "prompt": "Generate .design/PROFILE.md from this brand guide and existing deck.",
+    "artifact": true,
+    "expected_route": "profile",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "profile synthesis"
+  },
+  {
+    "id": "D03",
+    "prompt": "Document the current color, type, spacing, and component rules without changing the product.",
+    "artifact": true,
+    "expected_route": "profile",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "documentation only"
+  },
+  {
+    "id": "D04",
+    "prompt": "Infer the design system from the code, but mark anything uncertain.",
+    "artifact": true,
+    "expected_route": "profile",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "evidence-based profile"
+  }
+]
