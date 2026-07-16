@@ -1,5 +1,7 @@
 # design-workflow
 
+**English** | [한국어](README.ko.md)
+
 A medium-neutral Agent Skill for routing visual design work without accidentally
 redesigning existing products.
 
@@ -63,6 +65,7 @@ Extract a DESIGN.md from the current implementation and screenshots.
 design-workflow/
 ├── SKILL.md
 ├── README.md
+├── README.ko.md
 ├── LICENSE
 ├── NOTICE
 ├── THIRD_PARTY_NOTICES.md
