@@ -29,8 +29,8 @@
 
 - [x] Create or select the GitHub repository
 - [x] Push the exact validated tree
-- [ ] Confirm CI passes on GitHub
+- [x] Confirm CI passes on GitHub
 - [ ] Review repository description and topics
 - [ ] Tag `v0.1.0`
 - [ ] Create the GitHub Release from `CHANGELOG.md`
-- [ ] Verify the release archive preserves the `design-workflow/` directory name
+- [x] Verify the release archive preserves the `design-workflow/` directory name
