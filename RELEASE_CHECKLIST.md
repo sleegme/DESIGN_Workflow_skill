@@ -27,8 +27,8 @@
 
 ## Publication
 
-- [ ] Create or select the public GitHub repository
-- [ ] Push the exact validated tree
+- [x] Create or select the GitHub repository
+- [x] Push the exact validated tree
 - [ ] Confirm CI passes on GitHub
 - [ ] Review repository description and topics
 - [ ] Tag `v0.1.0`
