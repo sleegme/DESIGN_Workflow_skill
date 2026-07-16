@@ -78,7 +78,10 @@ def validate_links(root: Path) -> None:
 
 
 def main() -> None:
-    root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    args = sys.argv[1:]
+    strict_directory_name = "--strict-directory-name" in args
+    paths = [arg for arg in args if not arg.startswith("--")]
+    root = Path(paths[0] if paths else ".").resolve()
 
     for rel in REQUIRED:
         if not (root / rel).exists():
@@ -97,7 +100,7 @@ def main() -> None:
 
     if not NAME_RE.fullmatch(name):
         fail(f"invalid skill name: {name!r}")
-    if root.name != name:
+    if strict_directory_name and root.name != name:
         fail(f"directory name {root.name!r} must match skill name {name!r}")
     if not 1 <= len(description) <= 1024:
         fail("description must contain 1-1024 characters")
