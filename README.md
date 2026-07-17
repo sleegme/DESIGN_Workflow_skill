@@ -2,136 +2,143 @@
 
 **English** | [한국어](README.ko.md)
 
-A medium-neutral Agent Skill for routing visual design work without accidentally
-redesigning existing products.
+`design-workflow` is an Agent Skill that routes visual work by intent and
+prevents accidental redesigns. It acts as a policy layer before a specialized
+document, slide, image, design, browser, or code workflow performs the edit.
 
-The central guarantee is simple:
+The invariant is simple: preserve a meaningful existing design unless the user
+clearly authorizes replacement.
 
-> When a meaningful design already exists, preserve it by default. Generate a new
-> direction only for genuinely new work or an explicitly authorized redesign.
+## Routes
 
-## Scope
+| Route | Purpose |
+|---|---|
+| `preserve` | Correct or polish an existing artifact locally |
+| `expand` | Add a sibling part that inherits an existing system |
+| `create` | Establish a direction when no meaningful design exists |
+| `redesign` | Replace explicitly authorized design dimensions |
+| `critique` | Analyze without editing |
+| `brand-check` | Audit against brand or system evidence |
+| `translate` | Recompose a source for a new medium or constraint |
+| `profile` | Derive `DESIGN.md` or `.design/PROFILE.md` from evidence |
 
-The skill covers interfaces, websites, documents, slides, posters, brand assets,
-images, data visualizations, video, and print.
+## Repository layout
 
-It routes work into eight intents:
+```text
+design-workflow-project/
+├── design-workflow/             # the distributable Agent Skill
+│   ├── SKILL.md
+│   ├── agents/openai.yaml
+│   ├── references/
+│   ├── assets/
+│   ├── scripts/
+│   ├── LICENSE
+│   ├── NOTICE
+│   └── THIRD_PARTY_NOTICES.md
+├── evals/                       # route, trigger, and semantic smoke cases
+├── scripts/                     # project validation, grading, and packaging
+├── tests/                       # dependency-free unit tests
+└── .github/workflows/           # CI and tagged release automation
+```
 
-- preserve
-- expand
-- create
-- redesign
-- critique
-- brand-check
-- translate
-- profile
+Keeping the skill in a literal `design-workflow/` directory makes the package
+conform to the Agent Skills requirement that the parent directory match the
+frontmatter `name`.
 
 ## Installation
 
-Place the complete `design-workflow/` directory in an Agent Skills-compatible
-skill directory. The open standard uses a folder containing `SKILL.md`; many
-clients support project-local `.agents/skills/design-workflow/`.
+Install only the nested `design-workflow/` directory into the skills directory
+used by your client.
 
-Keep the directory name exactly `design-workflow` because the Agent Skills
-specification requires it to match the `name` field.
+```bash
+git clone https://github.com/sleegme/DESIGN_Workflow_skill.git
+cp -R DESIGN_Workflow_skill/design-workflow ~/.codex/skills/design-workflow
+```
+
+PowerShell:
+
+```powershell
+git clone https://github.com/sleegme/DESIGN_Workflow_skill.git
+Copy-Item -Recurse DESIGN_Workflow_skill\design-workflow $env:USERPROFILE\.codex\skills\design-workflow
+```
+
+A tagged GitHub Release contains `design-workflow-<version>.zip`. The archive
+always expands to a top-level `design-workflow/` directory and includes a SHA-256
+checksum.
 
 ## Usage
 
-Natural-language requests are enough:
+Invoke the skill explicitly or let a compatible client activate it from the
+description.
 
 ```text
-Polish the existing checkout flow without changing the layout.
+Use $design-workflow to polish the existing checkout without changing its layout.
 ```
 
 ```text
-Add an account-security screen that matches the current app.
+Add a billing-history screen that looks native to the current app.
 ```
 
 ```text
-We have no design yet. Create a visual direction for this scientific tool.
+Replace the current visual direction, but keep the information architecture.
 ```
 
-```text
-Redesign the current landing page from scratch, but keep the content hierarchy.
-```
-
-```text
-Extract a DESIGN.md from the current implementation and screenshots.
-```
-
-## Directory structure
-
-```text
-design-workflow/
-├── SKILL.md
-├── README.md
-├── README.ko.md
-├── LICENSE
-├── NOTICE
-├── THIRD_PARTY_NOTICES.md
-├── SOURCE_AUDIT.md
-├── CHANGELOG.md
-├── RELEASE_CHECKLIST.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-├── references/
-├── assets/
-├── examples/
-├── scripts/
-├── tests/
-└── .github/workflows/ci.yml
-```
-
-`SKILL.md` contains only the core route and boundary. Detailed instructions load
-progressively from `references/`.
-
-## Validation
-
-Run the dependency-free checks:
+For ambiguous or high-impact work, the skill can create a route contract and
+validate it without third-party dependencies:
 
 ```bash
-python scripts/validate_skill.py .
-python scripts/test_routing_cases.py
-
-# Before packaging or installing the skill directory:
-python scripts/validate_skill.py --strict-directory-name .
+python design-workflow/scripts/validate_route_contract.py contract.json
 ```
 
-For an official format check, also run:
+## Development and verification
+
+Use Python 3.11 or newer.
 
 ```bash
-skills-ref validate .
+python -m pip install -r requirements-dev.txt
+python scripts/validate_project.py
+agentskills validate design-workflow
+python -m unittest discover -s tests -v
+python scripts/package_skill.py --version 0.2.0
+python scripts/package_project.py --version 0.2.0
 ```
 
-The routing suite contains realistic positive, negative, ambiguous, and
-cross-medium prompts. The included v0.1.0 report is an authoring-session dry run,
-not a claim of identical behavior across every model or client.
+The deterministic CI checks structure, official Agent Skills conformance, route
+contract invariants, eval fixture quality, and reproducible packaging. Semantic
+behavior is evaluated separately with `evals/semantic-smoke.json`; record a
+client run and grade it with:
 
-## Design boundary
+```bash
+python scripts/grade_semantic_results.py path/to/client-result.json
+```
 
-The following do not authorize redesign by themselves:
+Trigger behavior is client- and model-dependent. `evals/trigger-cases.json`
+contains balanced positive and near-miss prompts for repeated client-specific
+activation tests; it is not presented as a deterministic unit test.
 
-- improve
-- polish
-- modernize
-- clean up
-- make it better
-- add a feature
-- fix responsiveness
-- align with the brand
+### Current verification evidence
 
-A redesign requires explicit replacement language or a clearly authorized
-structural/visual change.
+- project and link validator: passed
+- official `agentskills` format validator: passed
+- dependency-free unit tests: 13/13 passed
+- independent post-activation semantic forward test: 16/16 passed across all
+  eight routes
+- deterministic archive equality and root-directory checks: passed
 
-## Project-specific rules
+The raw and graded forward-test records are stored in `evals/results/`. These
+results demonstrate route selection after the skill is loaded; they do not claim
+universal activation accuracy across every client or model.
 
-This repository intentionally contains no project, company, palette, or product
-context. Put project-specific rules in the target repository's `DESIGN.md`,
-`.design/PROFILE.md`, brand guide, component library, or equivalent source of
-truth.
+## Release
 
-## License and sources
+1. Update `CHANGELOG.md`.
+2. Run all verification commands above.
+3. Push a semantic-version tag such as `v0.2.0`.
+4. The release workflow validates the project, builds the deterministic archive,
+   verifies the tag, and creates a GitHub Release with the archive and checksum.
 
-The package is Apache-2.0. Adapted portions from Anthropic and Google sources are
-identified in `SOURCE_AUDIT.md` and `THIRD_PARTY_NOTICES.md`. No unverified Canva
-material is included.
+## License and provenance
+
+The project is Apache-2.0. Adapted material from Anthropic and Google is recorded
+in `SOURCE_AUDIT.md` and `THIRD_PARTY_NOTICES.md`. Required legal files are also
+bundled inside the distributable skill.

@@ -1,17 +1,23 @@
 # Security Policy
 
-This skill contains instructions and validation scripts but does not require
-network access, credentials, or destructive commands.
+The runtime skill and route-contract validator require no network access,
+credentials, or destructive commands. Medium-specific execution tools remain
+subject to the active client's permissions and confirmation policies.
+
+## Threat model
+
+Design evidence may contain prompt injection, hidden instructions, malicious
+links, private metadata, or untrusted generated content. The runtime skill treats
+artifact content as evidence rather than authority and instructs the agent not to
+execute embedded directions.
 
 ## Reporting
 
-Report prompt-injection risks, unsafe tool assumptions, malicious source material,
-or validator bypasses through the repository's private security reporting channel.
+Use the repository's private security reporting channel for prompt-injection
+bypasses, unsafe tool assumptions, archive traversal issues, validator bypasses,
+or accidental disclosure of private material.
 
-Do not include secrets, proprietary design assets, or private project context in
-a public issue.
+Do not include secrets, proprietary design assets, private client data, or
+exploit payloads in a public issue.
 
-## Scope
-
-Security fixes are accepted for the latest released version and the current main
-branch.
+Security fixes are accepted for the latest release and the current main branch.

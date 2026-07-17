@@ -2,121 +2,101 @@
 
 [English](README.md) | **한국어**
 
-기존 제품을 실수로 재설계하지 않도록 시각 디자인 작업을 라우팅하는 매체 중립적 Agent Skill입니다.
+`design-workflow`는 시각 작업을 사용자 의도에 따라 라우팅하고 의도하지
+않은 재설계를 막는 Agent Skill입니다. 문서·슬라이드·이미지·Figma·웹·코드
+등 매체별 실행 워크플로보다 먼저 변경 경계를 정하는 정책 계층으로
+동작합니다.
 
-핵심 원칙은 단순합니다.
+핵심 원칙은 하나입니다. 의미 있는 기존 디자인은 사용자가 교체를 명확히
+승인하기 전까지 보존합니다.
 
-> 의미 있는 기존 디자인이 있다면 기본적으로 보존합니다. 완전히 새로운 작업이거나 사용자가 명시적으로 재설계를 승인한 경우에만 새로운 디자인 방향을 만듭니다.
+## 지원 경로
 
-## 적용 범위
-
-이 스킬은 인터페이스, 웹사이트, 문서, 슬라이드, 포스터, 브랜드 자산, 이미지, 데이터 시각화, 영상, 인쇄물을 다룹니다.
-
-작업은 다음 8개 의도로 분류됩니다.
-
-- `preserve`: 기존 디자인을 유지하면서 수정
-- `expand`: 기존 시스템과 일치하는 화면·상태·구성 요소 추가
-- `create`: 의미 있는 기존 디자인이 없는 상태에서 새 디자인 생성
-- `redesign`: 명시적으로 승인된 전면 재설계
-- `critique`: 수정하지 않고 분석·비평
-- `brand-check`: 브랜드·디자인 시스템 일관성 검수
-- `translate`: 다른 매체·비율·플랫폼으로 디자인 변환
-- `profile`: `DESIGN.md` 또는 디자인 프로필 추출
+| 경로 | 목적 |
+|---|---|
+| `preserve` | 기존 산출물을 국소적으로 수정·개선 |
+| `expand` | 기존 시스템을 따르는 새 화면·상태·슬라이드 추가 |
+| `create` | 의미 있는 디자인이 없을 때 새 방향 수립 |
+| `redesign` | 명시적으로 승인된 디자인 차원 교체 |
+| `critique` | 수정 없이 분석·비평 |
+| `brand-check` | 브랜드 또는 디자인 시스템 기준 검수 |
+| `translate` | 새 매체·비율·플랫폼 제약에 맞춰 재구성 |
+| `profile` | 증거에서 `DESIGN.md` 또는 디자인 프로필 추출 |
 
 ## 설치
 
-전체 `design-workflow/` 디렉터리를 Agent Skills 호환 스킬 디렉터리에 배치합니다. 공개 Agent Skills 표준은 `SKILL.md`를 포함한 폴더를 사용하며, 여러 클라이언트가 프로젝트 로컬 경로인 `.agents/skills/design-workflow/`를 지원합니다.
+저장소 전체가 아니라 내부의 정확한 `design-workflow/` 폴더만 클라이언트의
+스킬 디렉터리에 설치합니다.
 
-Agent Skills 명세상 디렉터리 이름은 `SKILL.md`의 `name` 필드와 일치해야 하므로 반드시 `design-workflow`를 사용해야 합니다.
+```powershell
+git clone https://github.com/sleegme/DESIGN_Workflow_skill.git
+Copy-Item -Recurse DESIGN_Workflow_skill\design-workflow $env:USERPROFILE\.codex\skills\design-workflow
+```
 
-## 사용법
+릴리스 ZIP은 항상 최상위에 `design-workflow/` 폴더를 포함하며 SHA-256
+체크섬을 함께 제공합니다.
 
-자연어로 요청하면 됩니다.
+## 사용 예시
 
 ```text
-기존 체크아웃 화면의 레이아웃은 유지하고 완성도만 높여줘.
+Use $design-workflow to polish the existing checkout without changing its layout.
 ```
 
 ```text
-현재 앱과 자연스럽게 이어지는 계정 보안 화면을 추가해줘.
+현재 앱과 자연스럽게 이어지는 결제 내역 화면을 추가해줘.
 ```
 
 ```text
-아직 디자인이 없어. 과학 주석 도구의 시각 방향을 새로 설계해줘.
+정보 구조는 유지하고 현재 시각 방향은 완전히 교체해줘.
 ```
 
-```text
-콘텐츠 계층은 유지하되 현재 랜딩 페이지를 처음부터 다시 디자인해줘.
-```
-
-```text
-현재 구현과 스크린샷을 바탕으로 DESIGN.md를 추출해줘.
-```
-
-## 디렉터리 구조
-
-```text
-design-workflow/
-├── SKILL.md
-├── README.md
-├── README.ko.md
-├── LICENSE
-├── NOTICE
-├── THIRD_PARTY_NOTICES.md
-├── SOURCE_AUDIT.md
-├── CHANGELOG.md
-├── RELEASE_CHECKLIST.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-├── references/
-├── assets/
-├── examples/
-├── scripts/
-├── tests/
-└── .github/workflows/ci.yml
-```
-
-`SKILL.md`에는 핵심 라우팅과 디자인 변경 경계만 들어 있습니다. 조건별 상세 지침은 `references/`에서 점진적으로 불러옵니다.
-
-## 검증
-
-의존성 없는 기본 검사는 다음과 같이 실행합니다.
+모호하거나 영향이 큰 작업은 route contract를 만들어 표준 라이브러리만으로
+검증할 수 있습니다.
 
 ```bash
-python scripts/validate_skill.py .
-python scripts/test_routing_cases.py
-
-# 스킬 디렉터리를 패키징하거나 설치하기 전
-python scripts/validate_skill.py --strict-directory-name .
+python design-workflow/scripts/validate_route_contract.py contract.json
 ```
 
-공식 형식 검사도 함께 실행할 수 있습니다.
+## 개발 및 검증
+
+Python 3.11 이상을 사용합니다.
 
 ```bash
-skills-ref validate .
+python -m pip install -r requirements-dev.txt
+python scripts/validate_project.py
+agentskills validate design-workflow
+python -m unittest discover -s tests -v
+python scripts/package_skill.py --version 0.2.0
+python scripts/package_project.py --version 0.2.0
 ```
 
-라우팅 테스트에는 실제 사용에 가까운 긍정·부정·모호한 요청과 매체 변환 요청이 포함됩니다. 저장소에 포함된 v0.1.0 보고서는 작성 세션 기준 dry run이며, 모든 모델과 클라이언트에서 동일한 동작을 보장하는 벤치마크는 아닙니다.
+CI는 구조, 공식 Agent Skills 형식, 변경 경계 계약, 평가 fixture 품질,
+재현 가능한 패키징을 검증합니다. 실제 의미 라우팅은
+`evals/semantic-smoke.json`을 클라이언트에서 실행하고 다음 명령으로
+채점합니다.
 
-## 디자인 변경 경계
+```bash
+python scripts/grade_semantic_results.py path/to/client-result.json
+```
 
-다음 표현만으로는 재설계가 승인되지 않습니다.
+스킬 활성화는 모델과 클라이언트에 따라 비결정적입니다.
+`evals/trigger-cases.json`은 반복 활성화 평가를 위한 균형 잡힌 긍정·근접
+부정 사례이며, 이를 정적 단위 테스트 결과로 과장하지 않습니다.
 
-- 개선해줘
-- 다듬어줘
-- 현대적으로 바꿔줘
-- 정리해줘
-- 더 좋게 만들어줘
-- 기능을 추가해줘
-- 반응형 문제를 고쳐줘
-- 브랜드에 맞춰줘
+### 현재 검증 결과
 
-재설계로 분류하려면 기존 구조나 시각 언어를 교체하라는 명시적 요청 또는 그에 준하는 분명한 승인이 필요합니다.
+- 프로젝트·링크 검증: 통과
+- 공식 `agentskills` 형식 검증: 통과
+- 의존성 없는 단위 테스트: 13/13 통과
+- 독립 에이전트 의미 라우팅 forward test: 8개 경로 16/16 통과
+- 재현 가능한 아카이브와 최상위 폴더 검증: 통과
 
-## 프로젝트별 규칙
-
-이 저장소에는 특정 프로젝트, 회사, 팔레트, 제품에 종속된 맥락이 포함되지 않습니다. 프로젝트별 규칙은 대상 저장소의 `DESIGN.md`, `.design/PROFILE.md`, 브랜드 가이드, 컴포넌트 라이브러리 또는 이에 해당하는 기준 문서에 작성해야 합니다.
+원시·채점 결과는 `evals/results/`에 있습니다. 이는 스킬이 로드된 뒤의
+라우팅을 검증하며, 모든 모델과 클라이언트의 활성화 정확도를 주장하지
+않습니다.
 
 ## 라이선스와 출처
 
-이 패키지는 Apache-2.0 라이선스로 배포됩니다. Anthropic과 Google 자료에서 수정·적용한 부분은 `SOURCE_AUDIT.md`와 `THIRD_PARTY_NOTICES.md`에 기록되어 있습니다. 출처를 검증하지 못한 Canva 자료는 포함하지 않았습니다.
+Apache-2.0으로 배포합니다. Anthropic과 Google 자료에서 수정·적용한 부분은
+`SOURCE_AUDIT.md`와 `THIRD_PARTY_NOTICES.md`에 기록되어 있으며, 필수 법적
+파일은 배포 스킬에도 포함됩니다.

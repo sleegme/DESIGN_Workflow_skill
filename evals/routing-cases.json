@@ -304,5 +304,95 @@
     "mutates_artifact": false,
     "redesign_authorized": false,
     "basis": "evidence-based profile"
+  },
+  {
+    "id": "P07",
+    "prompt": "먼저 화면 계층을 진단한 다음 기존 토큰으로 증명되는 간격 문제만 고쳐줘.",
+    "artifact": true,
+    "expected_route": "preserve",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "mixed critique and local repair uses the stricter preserve boundary"
+  },
+  {
+    "id": "E05",
+    "prompt": "Add a bilingual error state to the current checkout using its existing components.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "new state inherits the current component system"
+  },
+  {
+    "id": "E06",
+    "prompt": "Extract the current visual rules, then add a matching team-management screen.",
+    "artifact": true,
+    "expected_route": "expand",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "profile is a secondary step before system expansion"
+  },
+  {
+    "id": "C05",
+    "prompt": "텍스트 기획서만 있어. 재난 대응 훈련 도구의 첫 시각 시스템을 설계해줘.",
+    "artifact": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "brief exists but no meaningful design artifact exists"
+  },
+  {
+    "id": "R05",
+    "prompt": "Make this product feel entirely new, even if that means replacing the current design system, but keep the information architecture.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "clear semantic authorization without the exact word redesign"
+  },
+  {
+    "id": "R06",
+    "prompt": "정보 구조는 유지하되 기존 시각 체계를 완전히 교체해서 새롭게 디자인해줘.",
+    "artifact": true,
+    "expected_route": "redesign",
+    "mutates_artifact": true,
+    "redesign_authorized": true,
+    "basis": "explicit Korean authorization to replace the visual system"
+  },
+  {
+    "id": "Q05",
+    "prompt": "Review this onboarding flow for hierarchy and comprehension; give me findings only.",
+    "artifact": true,
+    "expected_route": "critique",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "analysis-only request with no mutation"
+  },
+  {
+    "id": "B05",
+    "prompt": "Check these Figma screens against our component library and token source for consistency.",
+    "artifact": true,
+    "expected_route": "brand-check",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "design-system evidence governs the audit"
+  },
+  {
+    "id": "T05",
+    "prompt": "Recompose this approved desktop receipt for a 58 mm thermal printer while keeping it recognizable.",
+    "artifact": true,
+    "expected_route": "translate",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "basis": "a specific source artifact is adapted to new production constraints"
+  },
+  {
+    "id": "D05",
+    "prompt": "Create one DESIGN.md from the implemented pages and token files, separating facts from inferences.",
+    "artifact": true,
+    "expected_route": "profile",
+    "mutates_artifact": false,
+    "redesign_authorized": false,
+    "basis": "derived design documentation without artifact mutation"
   }
 ]

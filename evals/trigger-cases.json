@@ -1,0 +1,170 @@
+[
+  {
+    "id": "TP01",
+    "query": "Polish this existing mobile screen without changing its layout.",
+    "should_trigger": true,
+    "category": "preserve-explicit",
+    "rationale": "visual revision with an explicit preservation boundary"
+  },
+  {
+    "id": "TP02",
+    "query": "The checkout in Figma feels cramped. Keep the components and hierarchy, but fix the visual rhythm.",
+    "should_trigger": true,
+    "category": "preserve-contextual",
+    "rationale": "design judgment is required inside an existing system"
+  },
+  {
+    "id": "TP03",
+    "query": "Add an account-security page that looks like it has always belonged to this app.",
+    "should_trigger": true,
+    "category": "expand",
+    "rationale": "a new screen must inherit the established design"
+  },
+  {
+    "id": "TP04",
+    "query": "Need one more Q4 slide in C:\\Decks\\board-final.pptx using the same visual system.",
+    "should_trigger": true,
+    "category": "expand-realistic",
+    "rationale": "a concrete slide artifact must be extended consistently"
+  },
+  {
+    "id": "TP05",
+    "query": "We have no identity yet—design the first landing page for a scientific annotation tool.",
+    "should_trigger": true,
+    "category": "create",
+    "rationale": "new visual direction is required"
+  },
+  {
+    "id": "TP06",
+    "query": "이 앱을 완전히 새롭게 보이도록 기존 비주얼 시스템을 버리고 다시 디자인해줘.",
+    "should_trigger": true,
+    "category": "redesign-korean",
+    "rationale": "explicit redesign authorization in Korean"
+  },
+  {
+    "id": "TP07",
+    "query": "Why does this dashboard feel generic? Diagnose it, but don't touch the files yet.",
+    "should_trigger": true,
+    "category": "critique",
+    "rationale": "analysis-only visual design request"
+  },
+  {
+    "id": "TP08",
+    "query": "Audit these campaign assets against brand-guide.pdf and list only objective mismatches.",
+    "should_trigger": true,
+    "category": "brand-check",
+    "rationale": "brand evidence governs a visual audit"
+  },
+  {
+    "id": "TP09",
+    "query": "Turn this horizontal poster into a vertical story without losing the campaign identity.",
+    "should_trigger": true,
+    "category": "translate",
+    "rationale": "cross-medium design translation"
+  },
+  {
+    "id": "TP10",
+    "query": "Infer DESIGN.md from the current components, tokens, and screenshots; mark uncertain rules.",
+    "should_trigger": true,
+    "category": "profile",
+    "rationale": "evidence-based design profile extraction"
+  },
+  {
+    "id": "TP11",
+    "query": "First audit the hierarchy, then fix only the spacing problems you can prove from our existing tokens.",
+    "should_trigger": true,
+    "category": "mixed",
+    "rationale": "mixed critique and preservation route"
+  },
+  {
+    "id": "TP12",
+    "query": "Our wireframe fixes the content order but not the look. Create the visual direction while preserving that structure.",
+    "should_trigger": true,
+    "category": "partial-evidence",
+    "rationale": "partial design evidence needs a dimension-specific boundary"
+  },
+  {
+    "id": "TN01",
+    "query": "Fix the React state update loop in this checkout component.",
+    "should_trigger": false,
+    "category": "technical-debugging",
+    "rationale": "no visual design decision is requested"
+  },
+  {
+    "id": "TN02",
+    "query": "Convert C:\\Decks\\board-final.pptx to PDF without changing anything.",
+    "should_trigger": false,
+    "category": "file-conversion",
+    "rationale": "mechanical conversion has no design judgment"
+  },
+  {
+    "id": "TN03",
+    "query": "Translate the button label 'Continue' into Korean.",
+    "should_trigger": false,
+    "category": "language-translation",
+    "rationale": "linguistic translation is not media translation"
+  },
+  {
+    "id": "TN04",
+    "query": "Rename the CSS variable --brand-blue to --action-blue without changing its value.",
+    "should_trigger": false,
+    "category": "mechanical-code-edit",
+    "rationale": "no design behavior or value changes"
+  },
+  {
+    "id": "TN05",
+    "query": "Calculate the WCAG contrast ratio between #111827 and #F9FAFB.",
+    "should_trigger": false,
+    "category": "single-calculation",
+    "rationale": "a numeric lookup alone does not need the workflow"
+  },
+  {
+    "id": "TN06",
+    "query": "Write alt text for the attached product photo.",
+    "should_trigger": false,
+    "category": "content-only",
+    "rationale": "content writing without visual-system decisions"
+  },
+  {
+    "id": "TN07",
+    "query": "Summarize this academic paper about design research methods.",
+    "should_trigger": false,
+    "category": "design-keyword-near-miss",
+    "rationale": "the topic is design but the task is summarization"
+  },
+  {
+    "id": "TN08",
+    "query": "Find the file named DESIGN.md under my uploads.",
+    "should_trigger": false,
+    "category": "profile-keyword-near-miss",
+    "rationale": "file lookup is not profile extraction"
+  },
+  {
+    "id": "TN09",
+    "query": "Export every PNG in assets/ at 2x resolution using the existing settings.",
+    "should_trigger": false,
+    "category": "asset-processing",
+    "rationale": "mechanical export with no design choice"
+  },
+  {
+    "id": "TN10",
+    "query": "Create a database schema for storing product themes and token versions.",
+    "should_trigger": false,
+    "category": "data-modeling",
+    "rationale": "schema design is not visual design"
+  },
+  {
+    "id": "TN11",
+    "query": "Change all occurrences of 'colour' to 'color' in the slide notes only.",
+    "should_trigger": false,
+    "category": "content-replacement",
+    "rationale": "content-only mechanical editing"
+  },
+  {
+    "id": "TN12",
+    "query": "Debug why the CI job called frontend-design-test is failing.",
+    "should_trigger": false,
+    "category": "trigger-keyword-near-miss",
+    "rationale": "a workflow name contains design but the task is CI debugging"
+  }
+]

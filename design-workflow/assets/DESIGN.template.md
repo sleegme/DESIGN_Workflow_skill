@@ -2,14 +2,17 @@
 
 ## Scope and evidence
 
-- Artifact or implementation:
-- Governing references:
+| Source | Location/version | What it governs | Confidence |
+|---|---|---|---|
+| | | | |
+
 - Last verified:
-- Confidence:
+- Applies to:
+- Does not apply to:
 
 ## Visual atmosphere and principles
 
-[Describe the visual character, density, hierarchy, and design intent.]
+[Describe the visual character, density, hierarchy, and functional intent.]
 
 ## Color roles
 
@@ -19,10 +22,11 @@
 | Primary text | | | |
 | Accent/action | | | |
 | Border/divider | | | |
+| Status roles | | | |
 
 ## Typography roles
 
-| Role | Family | Size/scale | Weight | Usage |
+| Role | Family | Size/scale | Weight/line height | Usage |
 |---|---|---|---|---|
 | Display | | | | |
 | Heading | | | | |
@@ -39,27 +43,27 @@
 
 ## Components and states
 
-[Buttons, inputs, navigation, cards/containers, tables/charts, empty/loading/error,
+[Buttons, inputs, navigation, containers, tables/charts, empty/loading/error,
 hover/focus/active/disabled states.]
 
 ## Imagery, iconography, data, and motion
 
-[Rules and observed patterns.]
+[Rules, observed patterns, exceptions, and source evidence.]
 
 ## Accessibility and responsiveness
 
 [Contrast, focus, target sizes, reduced motion, breakpoints, reading order.]
 
-## Preservation rules
+## Preservation contract
 
-- Preserve:
-- May vary:
-- Requires explicit redesign authorization:
+- Fixed:
+- Locally adjustable:
+- Redesign-only:
 
 ## Anti-patterns
 
-- [Project-specific prohibited pattern]
+- [Project-specific prohibited pattern and evidence]
 
 ## Unknowns and conflicts
 
-- [Unverified or conflicting evidence]
+- [Unverified or conflicting evidence, owner, and resolution needed]

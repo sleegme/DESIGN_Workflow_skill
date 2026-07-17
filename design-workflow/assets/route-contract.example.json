@@ -1,0 +1,18 @@
+{
+  "primary_route": "preserve",
+  "secondary_routes": [],
+  "artifact_exists": true,
+  "redesign_authorized": false,
+  "governing_evidence": [
+    "path or description of the editable source"
+  ],
+  "fixed": [
+    "information architecture",
+    "brand identity"
+  ],
+  "changeable": [
+    "local spacing and responsive defects"
+  ],
+  "unknowns": [],
+  "mutation_scope": "local"
+}
