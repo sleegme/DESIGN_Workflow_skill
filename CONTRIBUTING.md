@@ -1,23 +1,32 @@
 # Contributing
 
-Contributions should improve reusable design-routing behavior rather than add a
-specific project's visual rules.
+Keep the runtime skill focused on intent routing and change boundaries. Put human
+documentation, release notes, tests, and evaluation results at the repository
+root, not inside `design-workflow/`.
 
 ## Requirements
 
-- Keep `SKILL.md` concise and route-focused.
-- Put conditional detail in one-level `references/` files.
-- Add or update realistic cases for every routing change.
 - Preserve the default rule: existing design is not redesign authorization.
-- Do not add company, product, campaign, palette, or private workflow context.
-- Audit every copied or adapted source before inclusion.
-- Keep scripts dependency-free unless a dependency is clearly justified.
+- Keep `design-workflow/SKILL.md` concise and imperative.
+- Link route-specific references directly from `SKILL.md`.
+- Add realistic route and trigger cases for every behavior change.
+- Treat recorded semantic results as evidence only when they come from a fresh
+  client run.
+- Keep runtime scripts dependency-free.
+- Retain license, notice, and modification-attribution files.
+- Do not add private project context, secrets, proprietary assets, or fabricated
+  benchmark results.
 
-## Validation
+## Verification
 
 ```bash
-python scripts/validate_skill.py .
-python scripts/test_routing_cases.py
+python -m pip install -r requirements-dev.txt
+python scripts/validate_project.py
+agentskills validate design-workflow
+python -m unittest discover -s tests -v
+python scripts/package_skill.py --version 0.2.0
+python scripts/package_project.py --version 0.2.0
 ```
 
-Run the checks before opening a pull request.
+Open a pull request only after all commands pass and any changed semantic
+behavior has a fresh forward-test result.

@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install validation dependency
+        run: python -m pip install -r requirements-dev.txt
+      - name: Validate project and skill
+        run: |
+          python scripts/validate_project.py
+          agentskills validate design-workflow
+          python -m unittest discover -s tests -v
+      - name: Build release archive
+        run: python scripts/package_skill.py --version "$GITHUB_REF_NAME"
+      - name: Create verified GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "$GITHUB_REF_NAME"
+          dist/design-workflow-*.zip
+          dist/design-workflow-*.zip.sha256
+          --verify-tag
+          --generate-notes
+          --title "design-workflow $GITHUB_REF_NAME"

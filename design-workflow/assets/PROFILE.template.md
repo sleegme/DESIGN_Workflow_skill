@@ -6,7 +6,9 @@
 
 ## Source evidence
 
-- [Artifact, code, brand guide, template, or approved reference]
+| Source | What was observed | Confidence |
+|---|---|---|
+| | | |
 
 ## Identity anchors
 
@@ -14,15 +16,19 @@
 
 ## Tokens and roles
 
-[Colors, typography, spacing, geometry, depth, motion.]
+[Colors, typography, spacing, geometry, depth, and motion.]
 
 ## Components and patterns
 
-[Reusable patterns and states.]
+[Reusable patterns, variants, content conventions, and states.]
 
 ## Cross-medium behavior
 
 [What remains fixed and what adapts by medium.]
+
+## Accessibility and responsiveness
+
+[Focus, contrast, motion, input, reading order, and breakpoint behavior.]
 
 ## Preservation boundary
 
@@ -30,6 +36,6 @@
 - Locally adjustable:
 - Redesign-only:
 
-## Unknowns
+## Unknowns and conflicts
 
 - [Do not invent missing rules]
