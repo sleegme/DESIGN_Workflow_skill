@@ -9,6 +9,11 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+try:
+    from scripts import grade_semantic_results
+except ModuleNotFoundError:  # Direct execution puts scripts/ on sys.path.
+    import grade_semantic_results  # type: ignore[no-redef]
+
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "design-workflow"
 ROUTES = {
@@ -23,6 +28,7 @@ ROUTES = {
 }
 LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+VERSION_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 
 REQUIRED_PROJECT_FILES = {
     "README.md",
@@ -34,18 +40,20 @@ REQUIRED_PROJECT_FILES = {
     "CONTRIBUTING.md",
     "SECURITY.md",
     "CHANGELOG.md",
+    "VERSION",
     "requirements-dev.txt",
     ".gitattributes",
     ".gitignore",
     ".github/workflows/ci.yml",
     ".github/workflows/release.yml",
+    "evals/README.md",
     "evals/routing-cases.json",
     "evals/trigger-cases.json",
     "evals/semantic-smoke.json",
-    "evals/results/v0.2.0-codex-forward-test.raw.json",
-    "evals/results/v0.2.0-codex-forward-test.json",
+    "evals/semantic-result.schema.json",
     "scripts/grade_semantic_results.py",
     "scripts/package_project.py",
+    "scripts/package_skill.py",
 }
 REQUIRED_SKILL_FILES = {
     "SKILL.md",
@@ -111,7 +119,7 @@ def validate_route_cases() -> None:
         required = {
             "id",
             "prompt",
-            "artifact",
+            "meaningful_design_exists",
             "expected_route",
             "mutates_artifact",
             "redesign_authorized",
@@ -122,13 +130,23 @@ def validate_route_cases() -> None:
         ids.add(case["id"])
         route = case["expected_route"]
         require(route in ROUTES, f"unknown route in {case['id']}: {route}")
+        require(
+            isinstance(case["meaningful_design_exists"], bool),
+            f"invalid meaningful_design_exists in {case['id']}",
+        )
         counts[route] += 1
         if route == "redesign":
             require(case["redesign_authorized"] is True, f"{case['id']} lacks redesign authorization")
         if route == "create":
-            require(case["artifact"] is False, f"{case['id']} create case has an artifact")
-        else:
-            require(case["artifact"] is True, f"{case['id']} requires evidence")
+            require(
+                case["meaningful_design_exists"] is False,
+                f"{case['id']} create case has a meaningful existing design",
+            )
+        if route in {"preserve", "expand", "redesign"}:
+            require(
+                case["meaningful_design_exists"] is True,
+                f"{case['id']} requires a meaningful existing design",
+            )
         if route in {"critique", "brand-check", "profile"}:
             require(case["mutates_artifact"] is False, f"{case['id']} must not mutate design")
     require(all(counts[route] >= 5 for route in ROUTES), f"insufficient route coverage: {counts}")
@@ -153,26 +171,59 @@ def validate_trigger_cases() -> None:
 
 def validate_semantic_evidence() -> None:
     suite = json.loads((ROOT / "evals/semantic-smoke.json").read_text(encoding="utf-8"))
-    raw = json.loads(
-        (ROOT / "evals/results/v0.2.0-codex-forward-test.raw.json").read_text(encoding="utf-8")
-    )
-    graded = json.loads(
-        (ROOT / "evals/results/v0.2.0-codex-forward-test.json").read_text(encoding="utf-8")
-    )
-    expected = {case["id"]: case["expected_route"] for case in suite}
-    observed = {case["id"]: case for case in raw["cases"]}
-    require(set(observed) == set(expected), "semantic forward-test ids do not match the smoke suite")
-    failures = [
-        case_id
-        for case_id, expected_route in expected.items()
-        if observed[case_id]["observed_route"] != expected_route
-        or observed[case_id]["boundary_preserved"] is not True
-    ]
-    require(not failures, f"semantic forward-test failures: {failures}")
+    require(isinstance(suite, list) and suite, "semantic smoke suite must be a non-empty array")
+    for case in suite:
+        require(
+            {"id", "prompt", "meaningful_design_exists", "expected_route", "expected_boundary"}
+            <= case.keys(),
+            f"semantic case missing fields: {case}",
+        )
+        require(case["expected_route"] in ROUTES, f"unknown semantic route: {case['id']}")
+        require(
+            isinstance(case["meaningful_design_exists"], bool),
+            f"invalid semantic meaningful_design_exists: {case['id']}",
+        )
+        if case["expected_route"] == "create":
+            require(
+                case["meaningful_design_exists"] is False,
+                f"semantic create case has a meaningful design: {case['id']}",
+            )
+
+    partial_create = next((case for case in suite if case["id"] == "S06"), None)
+    require(partial_create is not None, "semantic smoke suite is missing S06")
     require(
-        graded.get("summary") == {"passed": len(expected), "total": len(expected), "pass_rate": 1.0},
-        "graded semantic summary is stale or inconsistent",
+        partial_create.get("fixed") == ["content order", "information architecture"],
+        "S06 must preserve its partial structural evidence",
     )
+    require(
+        set(partial_create.get("changeable", []))
+        == {"visual language", "typography", "palette", "component styling"},
+        "S06 must leave visual design dimensions changeable",
+    )
+
+    expected = {case["id"]: case["expected_route"] for case in suite}
+    raw_paths = sorted((ROOT / "evals/results").glob("*-forward-test.raw.json"))
+    require(raw_paths, "no recorded semantic forward-test results")
+    for raw_path in raw_paths:
+        graded_path = raw_path.with_name(raw_path.name.replace(".raw.json", ".json"))
+        require(graded_path.exists(), f"missing graded semantic result for {raw_path.name}")
+        raw = json.loads(raw_path.read_text(encoding="utf-8"))
+        graded = json.loads(graded_path.read_text(encoding="utf-8"))
+        if "schema_version" in raw:
+            require(
+                raw_path.name.startswith(f"v{raw.get('skill_version')}-"),
+                f"semantic result filename disagrees with skill_version: {raw_path.name}",
+            )
+        observed = {case["id"]: case for case in raw["cases"]}
+        require(
+            set(observed) == set(expected),
+            f"semantic forward-test ids do not match the smoke suite: {raw_path.name}",
+        )
+        computed = grade_semantic_results.grade(suite, raw)
+        require(
+            graded.get("summary") == computed["summary"],
+            f"graded semantic summary is stale or inconsistent: {graded_path.name}",
+        )
 
 
 def main() -> int:
@@ -182,6 +233,18 @@ def main() -> int:
         require(not missing_project, f"missing project files: {', '.join(missing_project)}")
         missing_skill = sorted(path for path in REQUIRED_SKILL_FILES if not (SKILL / path).exists())
         require(not missing_skill, f"missing skill files: {', '.join(missing_skill)}")
+
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        require(VERSION_RE.fullmatch(version) is not None, f"invalid VERSION: {version!r}")
+
+        semantic_schema = json.loads(
+            (ROOT / "evals/semantic-result.schema.json").read_text(encoding="utf-8")
+        )
+        require(
+            semantic_schema.get("properties", {}).get("schema_version", {}).get("const")
+            == grade_semantic_results.SCHEMA_VERSION,
+            "semantic result schema version disagrees with the grader",
+        )
 
         skill_files = [path.relative_to(ROOT).as_posix() for path in ROOT.rglob("SKILL.md")]
         require(skill_files == ["design-workflow/SKILL.md"], f"expected one distributable SKILL.md: {skill_files}")
@@ -213,7 +276,7 @@ def main() -> int:
         validate_route_cases()
         validate_trigger_cases()
         validate_semantic_evidence()
-    except (OSError, json.JSONDecodeError, ValidationError) as exc:
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError, ValidationError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 

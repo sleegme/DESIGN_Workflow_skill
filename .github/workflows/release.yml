@@ -26,6 +26,13 @@ jobs:
           python scripts/validate_project.py
           agentskills validate design-workflow
           python -m unittest discover -s tests -v
+      - name: Verify tag matches VERSION
+        run: |
+          version=$(<VERSION)
+          if [[ "$GITHUB_REF_NAME" != "v${version}" ]]; then
+            echo "release tag $GITHUB_REF_NAME does not match VERSION $version" >&2
+            exit 1
+          fi
       - name: Build release archive
         run: python scripts/package_skill.py --version "$GITHUB_REF_NAME"
       - name: Create verified GitHub Release

@@ -30,8 +30,11 @@ or *add* as local-change language. Do not interpret them as redesign permission.
    [references/routing.md](references/routing.md) for ambiguous, mixed, partial,
    or cross-medium requests.
 4. **Set the change contract.** Record what is fixed, what may change, the
-   governing evidence, unknowns, and redesign authorization. For ambiguous or
-   high-impact work, start from [assets/route-contract.example.json](assets/route-contract.example.json)
+   governing evidence, unknowns, whether a meaningful design system exists, and
+   redesign authorization. Input files alone do not establish a meaningful
+   design: a wireframe or text brief can fix structure while leaving visual
+   direction open. For ambiguous or high-impact work, start from
+   [assets/route-contract.example.json](assets/route-contract.example.json)
    and run `python scripts/validate_route_contract.py <contract.json>`.
 5. **Load only the route-specific reference.** Follow the reference map below.
 6. **Execute through the right medium workflow.** Reuse the target project's
@@ -88,8 +91,9 @@ reference silently override an established project system.
 ## Gotchas
 
 - A new page in an existing product is normally `expand`, not `create`.
-- A low-fidelity artifact may fix structure without fixing visual language; use
-  a mixed contract instead of pretending everything is fixed or unconstrained.
+- A low-fidelity artifact may fix structure without constituting a meaningful
+  existing design. It can use `create` with `meaningful_design_exists=false`,
+  structural dimensions fixed, and visual dimensions changeable.
 - `Modernize` under `preserve` permits local corrections, not wholesale token,
   layout, or brand replacement.
 - Adding a new sibling asset is `expand`; adapting a specific source artifact to

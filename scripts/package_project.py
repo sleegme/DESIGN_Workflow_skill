@@ -11,9 +11,34 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+VERSION_FILE = ROOT / "VERSION"
 VERSION_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 EXCLUDED_DIRS = {".git", ".venv", ".tooling", "__pycache__", "dist"}
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip", ".sha256"}
+
+
+def read_version() -> str:
+    try:
+        version = VERSION_FILE.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        raise ValueError(f"cannot read VERSION: {exc}") from exc
+    if not VERSION_RE.fullmatch(version):
+        raise ValueError(f"VERSION must contain a semantic version, got {version!r}")
+    return version
+
+
+def resolve_version(requested: str | None) -> str:
+    expected = read_version()
+    if requested is None:
+        return expected
+    version = requested.removeprefix("v")
+    if not VERSION_RE.fullmatch(version):
+        raise ValueError("--version must be a semantic version such as 0.2.1")
+    if version != expected:
+        raise ValueError(
+            f"--version {version!r} does not match VERSION {expected!r}"
+        )
+    return version
 
 
 def project_files() -> list[Path]:
@@ -30,7 +55,8 @@ def project_files() -> list[Path]:
     return sorted(files, key=lambda item: item.relative_to(ROOT).as_posix())
 
 
-def write_archive(output: Path, version: str) -> str:
+def write_archive(output: Path, version: str | None = None) -> str:
+    version = resolve_version(version)
     prefix = f"design-workflow-project-{version}"
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -58,13 +84,17 @@ def write_archive(output: Path, version: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", required=True, help="semantic version, optionally prefixed with v")
+    parser.add_argument(
+        "--version",
+        help="semantic version, optionally prefixed with v; defaults to VERSION and must match it",
+    )
     parser.add_argument("--output-dir", default="dist", help="directory for archive and checksum")
     args = parser.parse_args()
 
-    version = args.version.removeprefix("v")
-    if not VERSION_RE.fullmatch(version):
-        parser.error("--version must be a semantic version such as 0.2.0")
+    try:
+        version = resolve_version(args.version)
+    except ValueError as exc:
+        parser.error(str(exc))
     output_dir = Path(args.output_dir)
     if not output_dir.is_absolute():
         output_dir = ROOT / output_dir
