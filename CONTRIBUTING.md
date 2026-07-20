@@ -24,8 +24,8 @@ python -m pip install -r requirements-dev.txt
 python scripts/validate_project.py
 agentskills validate design-workflow
 python -m unittest discover -s tests -v
-python scripts/package_skill.py --version 0.2.0
-python scripts/package_project.py --version 0.2.0
+python scripts/package_skill.py
+python scripts/package_project.py
 ```
 
 Open a pull request only after all commands pass and any changed semantic

@@ -36,6 +36,7 @@ design-workflow-project/
 │   ├── NOTICE
 │   └── THIRD_PARTY_NOTICES.md
 ├── evals/                       # route, trigger, and semantic smoke cases
+├── VERSION                      # single release-version source of truth
 ├── scripts/                     # project validation, grading, and packaging
 ├── tests/                       # dependency-free unit tests
 └── .github/workflows/           # CI and tagged release automation
@@ -90,6 +91,11 @@ validate it without third-party dependencies:
 python design-workflow/scripts/validate_route_contract.py contract.json
 ```
 
+The contract's `meaningful_design_exists` field describes whether evidence
+contains an established design system that must be preserved, not whether any
+file exists. A wireframe can therefore use `create` with the field set to
+`false`, while recording content order and information architecture in `fixed`.
+
 ## Development and verification
 
 Use Python 3.11 or newer.
@@ -99,43 +105,66 @@ python -m pip install -r requirements-dev.txt
 python scripts/validate_project.py
 agentskills validate design-workflow
 python -m unittest discover -s tests -v
-python scripts/package_skill.py --version 0.2.0
-python scripts/package_project.py --version 0.2.0
+python scripts/package_skill.py
+python scripts/package_project.py
 ```
 
-The deterministic CI checks structure, official Agent Skills conformance, route
-contract invariants, eval fixture quality, and reproducible packaging. Semantic
-behavior is evaluated separately with `evals/semantic-smoke.json`; record a
-client run and grade it with:
+`VERSION` is the release source of truth. Both package commands read it by
+default; an optional `--version` must match it.
+
+Deterministic unit and invariant checks cover structure, official Agent Skills
+conformance, route contracts, fixture consistency, package allowlists, and
+reproducible archives. They do not execute a model. Semantic behavior is tested
+separately with `evals/semantic-smoke.json`; record a client run and grade it
+with:
 
 ```bash
 python scripts/grade_semantic_results.py path/to/client-result.json
 ```
 
-Trigger behavior is client- and model-dependent. `evals/trigger-cases.json`
-contains balanced positive and near-miss prompts for repeated client-specific
-activation tests; it is not presented as a deterministic unit test.
+Trigger/activation behavior is client- and model-dependent.
+`evals/trigger-cases.json` contains balanced positive and near-miss prompts for
+repeated client-specific activation tests; it is not a deterministic unit test.
+Semantic forward tests likewise describe one recorded client, model, commit, and
+suite revision. From v0.2.1 onward, raw results must follow
+[`evals/semantic-result.schema.json`](evals/semantic-result.schema.json) and
+record execution time, commit, skill version, runner, model, reasoning effort,
+suite provenance, observed routes, and boundary rationales. See
+[`evals/README.md`](evals/README.md) for the protocol.
+
+The grader can verify field completeness, route equality, and a declared
+boundary decision. It cannot independently infer that a response preserved the
+boundary. A person or separate model must review each rationale (and any safely
+recorded response excerpt) against the expected boundary.
 
 ### Current verification evidence
 
 - project and link validator: passed
 - official `agentskills` format validator: passed
-- dependency-free unit tests: 13/13 passed
-- independent post-activation semantic forward test: 16/16 passed across all
-  eight routes
+- dependency-free unit tests: 22/22 passed for this revision
+- historical v0.2.0 post-activation semantic forward test: 16/16 recorded across
+  all eight routes; it was not rerun or relabeled for v0.2.1
 - deterministic archive equality and root-directory checks: passed
 
-The raw and graded forward-test records are stored in `evals/results/`. These
-results demonstrate route selection after the skill is loaded; they do not claim
-universal activation accuracy across every client or model.
+The raw and graded forward-test records are stored in `evals/results/`. They
+demonstrate route selection after the skill was loaded in the recorded run; they
+do not claim universal activation accuracy or independently proven semantic
+boundaries across every client or model.
+
+Release skill ZIPs use an explicit file and directory allowlist. Generated
+Python caches are excluded. Hidden files, temporary or backup files,
+archives/checksums, symlinks, credential-like names, unexpected types, and
+oversized files fail packaging instead of being silently shipped. Repository
+docs, evals, and tests remain outside the runtime skill ZIP.
 
 ## Release
 
 1. Update `CHANGELOG.md`.
 2. Run all verification commands above.
-3. Push a semantic-version tag such as `v0.2.0`.
-4. The release workflow validates the project, builds the deterministic archive,
-   verifies the tag, and creates a GitHub Release with the archive and checksum.
+3. Create and push the tag from `VERSION`, for example `git tag "v$(<VERSION)"`.
+4. The release workflow requires `GITHUB_REF_NAME == "v" + VERSION`, validates
+   the project, builds the deterministic archive, verifies the tag, and creates
+   a GitHub Release with the archive and checksum. A mismatch stops the release.
 
 ## License and provenance
 
