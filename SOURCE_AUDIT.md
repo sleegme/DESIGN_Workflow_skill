@@ -1,7 +1,7 @@
 # Source and License Audit
 
-Audit date: 2026-07-17
-Release target: v0.2.0
+Audit date: 2026-07-20
+Release target: v0.2.1
 
 ## Repository license
 

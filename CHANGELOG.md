@@ -2,6 +2,27 @@
 
 All notable changes are documented here.
 
+## [0.2.1] - 2026-07-20
+
+### Added
+
+- root `VERSION` as the single release-version source of truth
+- provenance schema for v0.2.1+ semantic forward-test results, including
+  execution, commit, model, suite, observed-route, and boundary-rationale fields
+
+### Changed
+
+- replaced the route contract's physical artifact flag with
+  `meaningful_design_exists`
+- allowed `create` contracts to preserve partial structural evidence such as a
+  wireframe while establishing a new visual system
+- required release tags and explicit package versions to match `VERSION`
+- restricted runtime skill ZIP contents to documented files and directories,
+  rejecting hidden, temporary, archive, symlink, credential-like, unexpected,
+  and oversized entries
+- made the semantic grader require provenance and per-case boundary rationales
+  for new-schema results while retaining v0.2.0 records unchanged
+
 ## [0.2.0] - 2026-07-17
 
 ### Added

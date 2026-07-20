@@ -50,13 +50,17 @@ jobs:
           python-version: "3.12"
       - name: Build deterministic archive twice
         run: |
-          python scripts/package_skill.py --version 0.2.0 --output-dir dist-a
-          python scripts/package_skill.py --version 0.2.0 --output-dir dist-b
-          cmp dist-a/design-workflow-0.2.0.zip dist-b/design-workflow-0.2.0.zip
+          version=$(<VERSION)
+          python scripts/package_skill.py --output-dir dist-a
+          python scripts/package_skill.py --output-dir dist-b
+          python scripts/package_project.py --output-dir dist-a
+          python scripts/package_project.py --output-dir dist-b
+          cmp "dist-a/design-workflow-${version}.zip" "dist-b/design-workflow-${version}.zip"
+          cmp "dist-a/design-workflow-project-${version}.zip" "dist-b/design-workflow-project-${version}.zip"
       - uses: actions/upload-artifact@v4
         with:
           name: design-workflow-ci-package
           path: |
-            dist-a/design-workflow-0.2.0.zip
-            dist-a/design-workflow-0.2.0.zip.sha256
+            dist-a/design-workflow-*.zip
+            dist-a/design-workflow-*.zip.sha256
           if-no-files-found: error

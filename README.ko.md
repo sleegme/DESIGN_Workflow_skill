@@ -57,6 +57,11 @@ Use $design-workflow to polish the existing checkout without changing its layout
 python design-workflow/scripts/validate_route_contract.py contract.json
 ```
 
+계약의 `meaningful_design_exists`는 파일 존재 여부가 아니라 증거에 보존해야
+할 확립된 디자인 체계가 있는지를 뜻합니다. 따라서 wireframe이 있어도 의미
+있는 시각 체계가 없다면 `false`인 `create`를 사용하고 content order와
+information architecture를 `fixed`에 기록할 수 있습니다.
+
 ## 개발 및 검증
 
 Python 3.11 이상을 사용합니다.
@@ -66,34 +71,63 @@ python -m pip install -r requirements-dev.txt
 python scripts/validate_project.py
 agentskills validate design-workflow
 python -m unittest discover -s tests -v
-python scripts/package_skill.py --version 0.2.0
-python scripts/package_project.py --version 0.2.0
+python scripts/package_skill.py
+python scripts/package_project.py
 ```
 
-CI는 구조, 공식 Agent Skills 형식, 변경 경계 계약, 평가 fixture 품질,
-재현 가능한 패키징을 검증합니다. 실제 의미 라우팅은
-`evals/semantic-smoke.json`을 클라이언트에서 실행하고 다음 명령으로
-채점합니다.
+루트의 `VERSION`이 릴리스 버전의 단일 기준입니다. 두 패키징 명령은 이를
+기본으로 읽으며, 선택적으로 전달한 `--version`도 반드시 일치해야 합니다.
+
+결정적인 단위·불변식 검증은 구조, 공식 Agent Skills 형식, route contract,
+fixture 정합성, 패키지 allowlist와 재현 가능한 ZIP을 검사하며 모델을
+실행하지 않습니다. 실제 의미 라우팅은 `evals/semantic-smoke.json`을
+클라이언트에서 실행하고 다음 명령으로 별도 채점합니다.
 
 ```bash
 python scripts/grade_semantic_results.py path/to/client-result.json
 ```
 
-스킬 활성화는 모델과 클라이언트에 따라 비결정적입니다.
+스킬 activation test는 모델과 클라이언트에 따라 비결정적입니다.
 `evals/trigger-cases.json`은 반복 활성화 평가를 위한 균형 잡힌 긍정·근접
 부정 사례이며, 이를 정적 단위 테스트 결과로 과장하지 않습니다.
+Semantic forward test 역시 기록된 한 client·model·commit·suite revision의
+post-activation 동작만 보여줍니다. v0.2.1부터 원시 결과는
+[`evals/semantic-result.schema.json`](evals/semantic-result.schema.json)을 따르고
+실행 시각, commit SHA, skill version, runner, 모델, reasoning effort, suite
+provenance, 실제 route와 boundary 근거를 기록해야 합니다. 자세한 절차는
+[`evals/README.md`](evals/README.md)에 있습니다.
+
+grader는 필드 완전성, route 일치, 실행자가 선언한 boundary 판정과 근거
+존재를 확인할 뿐 실제 응답이 경계를 지켰다고 독립적으로 의미 판정하지
+않습니다. 사람 또는 별도 모델이 근거와 안전하게 기록된 응답 일부를
+expected boundary와 대조해야 합니다.
 
 ### 현재 검증 결과
 
 - 프로젝트·링크 검증: 통과
 - 공식 `agentskills` 형식 검증: 통과
-- 의존성 없는 단위 테스트: 13/13 통과
-- 독립 에이전트 의미 라우팅 forward test: 8개 경로 16/16 통과
+- 의존성 없는 단위 테스트: 이 revision에서 22/22 통과
+- 과거 v0.2.0 post-activation semantic forward test: 8개 경로 16/16 기록;
+  v0.2.1 결과로 재실행하거나 이름을 바꾸지 않음
 - 재현 가능한 아카이브와 최상위 폴더 검증: 통과
 
-원시·채점 결과는 `evals/results/`에 있습니다. 이는 스킬이 로드된 뒤의
-라우팅을 검증하며, 모든 모델과 클라이언트의 활성화 정확도를 주장하지
-않습니다.
+원시·채점 결과는 `evals/results/`에 있습니다. 이는 기록된 실행에서 스킬이
+로드된 뒤의 라우팅을 보여주며, 모든 모델·클라이언트의 activation 정확도나
+독립적으로 입증된 semantic boundary를 주장하지 않습니다.
+
+릴리스 skill ZIP은 명시적 파일·디렉터리 allowlist를 사용합니다. 생성된
+Python cache는 제외합니다. 숨김 파일, 임시·백업 파일, ZIP/checksum, symlink,
+credential로 보이는 파일명, 예상하지 않은 형식과 대형 파일이 있으면
+조용히 포함하지 않고 패키징을 실패시킵니다. 저장소 문서·eval·tests는
+runtime skill ZIP에 포함되지 않습니다.
+
+## 릴리스
+
+1. `VERSION`과 `CHANGELOG.md`를 갱신합니다.
+2. 위 검증 명령을 모두 실행합니다.
+3. `git tag "v$(<VERSION)"`처럼 `VERSION`에서 tag를 생성해 push합니다.
+4. release workflow는 `GITHUB_REF_NAME == "v" + VERSION`을 요구합니다.
+   불일치하면 GitHub Release를 만들기 전에 실패합니다.
 
 ## 라이선스와 출처
 

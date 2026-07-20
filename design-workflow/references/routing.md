@@ -18,8 +18,14 @@ evidence.
 
 ## Meaningful existing design
 
-Treat a design as meaningful when available evidence establishes at least two of
-the following and the user has not asked to discard them:
+`meaningful_design_exists` answers whether the evidence establishes a coherent
+design direction that must be preserved. It does not answer whether any input
+file, draft, or artifact exists.
+
+Treat a design as meaningful when the available evidence establishes a
+repeatable visual, interaction, component, or identity system, or a sufficiently
+resolved composition whose design decisions must be preserved. Relevant
+evidence includes:
 
 - content hierarchy or information architecture
 - recurring layout or spacing logic
@@ -27,10 +33,20 @@ the following and the user has not asked to discard them:
 - component and interaction patterns
 - brand identity or campaign identity
 - an approved editable artifact, implementation, template, or design contract
+  that actually encodes design decisions
 
-Treat partial evidence dimension by dimension. A wireframe can fix hierarchy
-while leaving visual language open. A brand guide can fix identity while leaving
-page composition open. Record these as separate fixed and changeable fields.
+Do not count a file's physical existence by itself. Treat partial evidence
+dimension by dimension. A wireframe or text plan can fix content order and
+information architecture while `meaningful_design_exists` remains `false`; in
+that case `create` establishes the visual direction without changing those fixed
+dimensions. A brand guide can establish a meaningful identity while leaving page
+composition open. Record every constraint in `fixed` and every permitted design
+dimension in `changeable`.
+
+The contract validator requires `meaningful_design_exists=false` for `create`
+and requires `true` for `preserve`, `expand`, and `redesign`. Analysis,
+translation, and documentation routes may operate on partial evidence, so their
+value follows the evidence rather than the physical presence of an artifact.
 
 ## Explicit redesign authorization
 

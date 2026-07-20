@@ -2,96 +2,114 @@
   {
     "id": "S01",
     "prompt": "Keep the current dashboard structure and correct only the inconsistent spacing and focus states.",
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "expected_boundary": "structure and identity remain fixed"
   },
   {
     "id": "S02",
     "prompt": "Modernize this checkout, but keep its hierarchy, component library, and brand identity.",
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "expected_boundary": "modernization remains local"
   },
   {
     "id": "S03",
     "prompt": "Add a billing-history screen that belongs to the current app.",
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "expected_boundary": "new screen inherits the existing system"
   },
   {
     "id": "S04",
     "prompt": "Add a subway ad to this campaign and adapt the approved poster composition to the new placement.",
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "expected_boundary": "translate is secondary and campaign identity remains fixed"
   },
   {
     "id": "S05",
     "prompt": "There are no mockups or identity assets. Design the first version of this field-research tool.",
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "expected_boundary": "establish a new direction from the brief"
   },
   {
     "id": "S06",
     "prompt": "The wireframe fixes content order only; create a visual system without changing that order.",
+    "meaningful_design_exists": false,
+    "fixed": ["content order", "information architecture"],
+    "changeable": ["visual language", "typography", "palette", "component styling"],
     "expected_route": "create",
     "expected_boundary": "content order remains fixed while visual language is new"
   },
   {
     "id": "S07",
     "prompt": "Replace the current visual direction entirely, but preserve the copy and information architecture.",
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "expected_boundary": "copy and information architecture remain fixed"
   },
   {
     "id": "S08",
     "prompt": "Make this feel entirely new even if the current design system must be replaced.",
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "expected_boundary": "system replacement is explicitly authorized"
   },
   {
     "id": "S09",
     "prompt": "Explain why this onboarding screen is hard to scan. Do not edit it.",
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "expected_boundary": "analysis only"
   },
   {
     "id": "S10",
     "prompt": "Compare these two poster versions and recommend one without changing either file.",
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "expected_boundary": "comparison only"
   },
   {
     "id": "S11",
     "prompt": "Audit the deck against the supplied brand guide and token sheet.",
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "expected_boundary": "evidence-based compliance audit only"
   },
   {
     "id": "S12",
     "prompt": "Find inconsistencies across these product screens using the component library as the standard.",
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "expected_boundary": "component library governs the audit"
   },
   {
     "id": "S13",
     "prompt": "Turn this desktop receipt into a 58 mm thermal-print layout without rebranding it.",
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "expected_boundary": "identity and content meaning remain fixed"
   },
   {
     "id": "S14",
     "prompt": "Adapt this approved slide into a fifteen-second motion graphic.",
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "expected_boundary": "same identity under video constraints"
   },
   {
     "id": "S15",
     "prompt": "Infer DESIGN.md from the current code and screenshots and mark uncertain rules.",
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "expected_boundary": "document evidence without redesigning"
   },
   {
     "id": "S16",
     "prompt": "Generate .design/PROFILE.md from the existing brand guide and deck.",
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "expected_boundary": "create one derived profile only"
   }

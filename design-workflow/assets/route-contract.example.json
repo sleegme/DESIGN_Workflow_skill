@@ -1,18 +1,21 @@
 {
-  "primary_route": "preserve",
+  "primary_route": "create",
   "secondary_routes": [],
-  "artifact_exists": true,
+  "meaningful_design_exists": false,
   "redesign_authorized": false,
   "governing_evidence": [
-    "path or description of the editable source"
+    "wireframe with approved content order"
   ],
   "fixed": [
     "information architecture",
-    "brand identity"
+    "content order"
   ],
   "changeable": [
-    "local spacing and responsive defects"
+    "visual language",
+    "typography",
+    "palette",
+    "component styling"
   ],
   "unknowns": [],
-  "mutation_scope": "local"
+  "mutation_scope": "system"
 }

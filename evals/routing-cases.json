@@ -2,7 +2,7 @@
   {
     "id": "P01",
     "prompt": "Keep the current dashboard layout and fix the cramped spacing.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -11,7 +11,7 @@
   {
     "id": "P02",
     "prompt": "Modernize this checkout page but don't change the information hierarchy.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -20,7 +20,7 @@
   {
     "id": "P03",
     "prompt": "Make the existing slide deck more polished and consistent.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -29,7 +29,7 @@
   {
     "id": "P04",
     "prompt": "Fix the mobile overflow and keyboard focus in this UI.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -38,7 +38,7 @@
   {
     "id": "P05",
     "prompt": "Match the button colors to the approved brand guide.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -47,7 +47,7 @@
   {
     "id": "P06",
     "prompt": "This feels AI-generated. Remove the unnecessary decorative cards, but keep the structure.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -56,7 +56,7 @@
   {
     "id": "E01",
     "prompt": "Add a settings screen that looks like it has always belonged to this app.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -65,7 +65,7 @@
   {
     "id": "E02",
     "prompt": "Add one Q4 summary slide using the same deck template.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -74,7 +74,7 @@
   {
     "id": "E03",
     "prompt": "Create an empty state for the current table without changing the table design.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -83,7 +83,7 @@
   {
     "id": "E04",
     "prompt": "Extend this poster campaign with a subway ad in the same visual language.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -92,7 +92,7 @@
   {
     "id": "C01",
     "prompt": "We have no visual identity yet. Design a landing page for a scientific annotation tool.",
-    "artifact": false,
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -101,7 +101,7 @@
   {
     "id": "C02",
     "prompt": "Create a new conference poster from this text brief.",
-    "artifact": false,
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -110,7 +110,7 @@
   {
     "id": "C03",
     "prompt": "Design the first version of a mobile habit tracker; there are no mockups.",
-    "artifact": false,
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -119,7 +119,7 @@
   {
     "id": "C04",
     "prompt": "Make a fresh data-visualization style guide from the supplied dataset and editorial brief.",
-    "artifact": false,
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -128,7 +128,7 @@
   {
     "id": "R01",
     "prompt": "Discard the current visual direction and redesign the site from scratch.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -137,7 +137,7 @@
   {
     "id": "R02",
     "prompt": "Completely rethink the layout as an editorial product, but keep the copy.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -146,7 +146,7 @@
   {
     "id": "R03",
     "prompt": "Rebrand this app and replace the existing color, type, and component language.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -155,7 +155,7 @@
   {
     "id": "R04",
     "prompt": "Explore a fundamentally different concept and do not preserve the current composition.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -164,7 +164,7 @@
   {
     "id": "Q01",
     "prompt": "Why does this dashboard feel generic? Don't edit it yet.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -173,7 +173,7 @@
   {
     "id": "Q02",
     "prompt": "Compare these two poster versions and explain which communicates better.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -182,7 +182,7 @@
   {
     "id": "Q03",
     "prompt": "Review the hierarchy and accessibility of this screen.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -191,7 +191,7 @@
   {
     "id": "Q04",
     "prompt": "Diagnose why the current design no longer matches the reference.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -200,7 +200,7 @@
   {
     "id": "B01",
     "prompt": "Audit these slides against the supplied brand guide.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -209,7 +209,7 @@
   {
     "id": "B02",
     "prompt": "Check whether the campaign assets use the logo, color, and typography correctly.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -218,7 +218,7 @@
   {
     "id": "B03",
     "prompt": "Find visual inconsistencies across these product screens.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -227,7 +227,7 @@
   {
     "id": "B04",
     "prompt": "Verify this chart style follows the organization's visualization standards.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -236,7 +236,7 @@
   {
     "id": "T01",
     "prompt": "Turn this horizontal poster into a vertical social story while keeping the campaign identity.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -245,7 +245,7 @@
   {
     "id": "T02",
     "prompt": "Convert this web dashboard into a printable A4 report.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -254,7 +254,7 @@
   {
     "id": "T03",
     "prompt": "Adapt this slide into a 15-second motion graphic.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -263,7 +263,7 @@
   {
     "id": "T04",
     "prompt": "Recompose the desktop screen for a watch-sized interface without rebranding it.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -272,7 +272,7 @@
   {
     "id": "D01",
     "prompt": "Extract a DESIGN.md from the current components and screenshots.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -281,7 +281,7 @@
   {
     "id": "D02",
     "prompt": "Generate .design/PROFILE.md from this brand guide and existing deck.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -290,7 +290,7 @@
   {
     "id": "D03",
     "prompt": "Document the current color, type, spacing, and component rules without changing the product.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -299,7 +299,7 @@
   {
     "id": "D04",
     "prompt": "Infer the design system from the code, but mark anything uncertain.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -308,7 +308,7 @@
   {
     "id": "P07",
     "prompt": "먼저 화면 계층을 진단한 다음 기존 토큰으로 증명되는 간격 문제만 고쳐줘.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "preserve",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -317,7 +317,7 @@
   {
     "id": "E05",
     "prompt": "Add a bilingual error state to the current checkout using its existing components.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -326,7 +326,7 @@
   {
     "id": "E06",
     "prompt": "Extract the current visual rules, then add a matching team-management screen.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "expand",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -335,16 +335,27 @@
   {
     "id": "C05",
     "prompt": "텍스트 기획서만 있어. 재난 대응 훈련 도구의 첫 시각 시스템을 설계해줘.",
-    "artifact": false,
+    "meaningful_design_exists": false,
     "expected_route": "create",
     "mutates_artifact": true,
     "redesign_authorized": false,
-    "basis": "brief exists but no meaningful design artifact exists"
+    "basis": "brief exists but no meaningful design system exists"
+  },
+  {
+    "id": "C06",
+    "prompt": "The wireframe fixes content order and information architecture only. Create the first visual direction without changing that structure.",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "mutates_artifact": true,
+    "redesign_authorized": false,
+    "fixed": ["content order", "information architecture"],
+    "changeable": ["visual language", "typography", "palette", "component styling"],
+    "basis": "partial structural evidence exists but no meaningful visual design system exists"
   },
   {
     "id": "R05",
     "prompt": "Make this product feel entirely new, even if that means replacing the current design system, but keep the information architecture.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -353,7 +364,7 @@
   {
     "id": "R06",
     "prompt": "정보 구조는 유지하되 기존 시각 체계를 완전히 교체해서 새롭게 디자인해줘.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "redesign",
     "mutates_artifact": true,
     "redesign_authorized": true,
@@ -362,7 +373,7 @@
   {
     "id": "Q05",
     "prompt": "Review this onboarding flow for hierarchy and comprehension; give me findings only.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "critique",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -371,7 +382,7 @@
   {
     "id": "B05",
     "prompt": "Check these Figma screens against our component library and token source for consistency.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "brand-check",
     "mutates_artifact": false,
     "redesign_authorized": false,
@@ -380,7 +391,7 @@
   {
     "id": "T05",
     "prompt": "Recompose this approved desktop receipt for a 58 mm thermal printer while keeping it recognizable.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "translate",
     "mutates_artifact": true,
     "redesign_authorized": false,
@@ -389,7 +400,7 @@
   {
     "id": "D05",
     "prompt": "Create one DESIGN.md from the implemented pages and token files, separating facts from inferences.",
-    "artifact": true,
+    "meaningful_design_exists": true,
     "expected_route": "profile",
     "mutates_artifact": false,
     "redesign_authorized": false,

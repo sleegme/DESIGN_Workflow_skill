@@ -37,13 +37,22 @@ class EvalQualityTests(unittest.TestCase):
     def test_semantic_grader_accepts_complete_matching_results(self) -> None:
         suite = json.loads((ROOT / "evals/semantic-smoke.json").read_text(encoding="utf-8"))
         result = {
+            "schema_version": "1.0",
+            "executed_at": "2026-07-20T12:00:00Z",
+            "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+            "skill_version": "0.2.1",
             "runner": "unit-test",
-            "skill_revision": "test",
+            "client": "unit-test-client",
+            "model": "fixture-model",
+            "reasoning_effort": "fixture",
+            "suite_file": "evals/semantic-smoke.json",
+            "suite_revision": "0123456789abcdef0123456789abcdef01234567",
             "cases": [
                 {
                     "id": case["id"],
                     "observed_route": case["expected_route"],
                     "boundary_preserved": True,
+                    "boundary_rationale": "Fixture rationale for schema validation.",
                     "notes": "",
                 }
                 for case in suite
@@ -51,6 +60,42 @@ class EvalQualityTests(unittest.TestCase):
         }
         graded = grade_semantic_results.grade(suite, result)
         self.assertEqual(graded["summary"]["pass_rate"], 1.0)
+        self.assertTrue(graded["requires_independent_boundary_review"])
+        self.assertEqual(graded["cases"][0]["expected_boundary"], suite[0]["expected_boundary"])
+
+    def test_semantic_grader_requires_provenance_and_boundary_rationale(self) -> None:
+        suite = json.loads((ROOT / "evals/semantic-smoke.json").read_text(encoding="utf-8"))
+        with self.assertRaisesRegex(ValueError, "schema_version is required"):
+            grade_semantic_results.grade(suite, {"cases": []})
+
+        result = {
+            "schema_version": "1.0",
+            "cases": [],
+        }
+        with self.assertRaisesRegex(ValueError, "executed_at"):
+            grade_semantic_results.grade(suite, result)
+
+        result = {
+            "schema_version": "1.0",
+            "executed_at": "2026-07-20T12:00:00Z",
+            "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+            "skill_version": "0.2.1",
+            "runner": "unit-test",
+            "model": "fixture-model",
+            "reasoning_effort": "fixture",
+            "suite_file": "evals/semantic-smoke.json",
+            "suite_revision": "0123456789abcdef0123456789abcdef01234567",
+            "cases": [
+                {
+                    "id": case["id"],
+                    "observed_route": case["expected_route"],
+                    "boundary_preserved": True,
+                }
+                for case in suite
+            ],
+        }
+        with self.assertRaisesRegex(ValueError, "boundary_rationale"):
+            grade_semantic_results.grade(suite, result)
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ MUTATION_SCOPES = {"none", "local", "system", "replacement", "documentation"}
 REQUIRED_FIELDS = {
     "primary_route",
     "secondary_routes",
-    "artifact_exists",
+    "meaningful_design_exists",
     "redesign_authorized",
     "governing_evidence",
     "fixed",
@@ -74,10 +74,10 @@ def validate_contract(contract: Any) -> list[str]:
     if len(secondary) != len(set(secondary)):
         errors.append("secondary_routes must not contain duplicates")
 
-    artifact_exists = contract["artifact_exists"]
+    meaningful_design_exists = contract["meaningful_design_exists"]
     redesign_authorized = contract["redesign_authorized"]
-    if not isinstance(artifact_exists, bool):
-        errors.append("artifact_exists must be a boolean")
+    if not isinstance(meaningful_design_exists, bool):
+        errors.append("meaningful_design_exists must be a boolean")
     if not isinstance(redesign_authorized, bool):
         errors.append("redesign_authorized must be a boolean")
 
@@ -101,10 +101,10 @@ def validate_contract(contract: Any) -> list[str]:
     selected_routes = {primary, *secondary}
     if "redesign" in selected_routes and redesign_authorized is not True:
         errors.append("redesign requires redesign_authorized=true")
-    if primary == "create" and artifact_exists is not False:
-        errors.append("create requires artifact_exists=false")
-    if primary in ROUTES - {"create"} and artifact_exists is not True:
-        errors.append(f"{primary} requires artifact_exists=true")
+    if primary == "create" and meaningful_design_exists is not False:
+        errors.append("create requires meaningful_design_exists=false")
+    if primary in {"preserve", "expand", "redesign"} and meaningful_design_exists is not True:
+        errors.append(f"{primary} requires meaningful_design_exists=true")
 
     expected_scopes = {
         "preserve": {"local"},

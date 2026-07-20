@@ -27,7 +27,7 @@ class RouteContractTests(unittest.TestCase):
         return {
             "primary_route": route,
             "secondary_routes": [],
-            "artifact_exists": route != "create",
+            "meaningful_design_exists": route != "create",
             "redesign_authorized": route == "redesign",
             "governing_evidence": ["user request"],
             "fixed": ["content hierarchy"],
@@ -46,10 +46,29 @@ class RouteContractTests(unittest.TestCase):
         contract["redesign_authorized"] = False
         self.assertIn("redesign requires redesign_authorized=true", MODULE.validate_contract(contract))
 
-    def test_create_rejects_existing_artifact(self) -> None:
+    def test_create_accepts_no_design_evidence(self) -> None:
         contract = self.contract("create")
-        contract["artifact_exists"] = True
-        self.assertIn("create requires artifact_exists=false", MODULE.validate_contract(contract))
+        self.assertEqual(MODULE.validate_contract(contract), [])
+
+    def test_create_accepts_wireframe_without_meaningful_visual_design(self) -> None:
+        contract = self.contract("create")
+        contract["governing_evidence"] = ["wireframe"]
+        contract["fixed"] = ["content order", "information architecture"]
+        contract["changeable"] = [
+            "visual language",
+            "typography",
+            "palette",
+            "component styling",
+        ]
+        self.assertEqual(MODULE.validate_contract(contract), [])
+
+    def test_create_rejects_meaningful_existing_design(self) -> None:
+        contract = self.contract("create")
+        contract["meaningful_design_exists"] = True
+        self.assertIn(
+            "create requires meaningful_design_exists=false",
+            MODULE.validate_contract(contract),
+        )
 
     def test_analysis_rejects_mutation(self) -> None:
         contract = self.contract("critique")
