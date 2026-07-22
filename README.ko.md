@@ -2,13 +2,21 @@
 
 [English](README.md) | **한국어**
 
-`design-workflow`는 시각 작업을 사용자 의도에 따라 라우팅하고 의도하지
-않은 재설계를 막는 Agent Skill입니다. 문서·슬라이드·이미지·Figma·웹·코드
-등 매체별 실행 워크플로보다 먼저 변경 경계를 정하는 정책 계층으로
-동작합니다.
+`design-workflow`는 실제 작업을 시작하기 전에 무엇을 유지하고 무엇을
+바꿀 수 있는지, 기존 디자인을 개선할지 처음부터 만들지를 ChatGPT가
+판단하도록 돕습니다.
 
-핵심 원칙은 하나입니다. 의미 있는 기존 디자인은 사용자가 교체를 명확히
-승인하기 전까지 보존합니다.
+## 설치하면 무엇이 달라지나요?
+
+이 스킬은 시각 작업에 관한 판단을 안내합니다. 스스로 산출물을 그리거나
+렌더링·편집하지 않으며, 설치만으로 모든 결과물의 스타일이나 ChatGPT
+화면이 자동으로 바뀌지 않습니다. 실제 작업은 ChatGPT 또는 연결된 이미지,
+웹, 문서, 슬라이드, 디자인, 브라우저, 코드 실행 워크플로가 수행합니다.
+
+기술적으로 `design-workflow`는 routing과 change boundary를 관리하는
+guardrail입니다. 실행 도구가 작업하기 전에 요청을 보존, 개선, 확장, 신규
+제작 또는 명시적 재설계로 분류합니다. 핵심 원칙은 하나입니다. 의미 있는
+기존 디자인은 사용자가 교체를 명확히 승인하기 전까지 보존합니다.
 
 ## 지원 경로
 
@@ -23,10 +31,32 @@
 | `translate` | 새 매체·비율·플랫폼 제약에 맞춰 재구성 |
 | `profile` | 증거에서 `DESIGN.md` 또는 디자인 프로필 추출 |
 
-## 설치
+## ChatGPT에 설치
+
+사용 중인 ChatGPT 환경에서 스킬 생성 또는 업로드를 지원한다면:
+
+1. **Plugins / Skills**를 엽니다.
+2. 스킬 생성 또는 업로드 옵션을 선택합니다.
+3. 해당 GitHub Release에서 `design-workflow-<version>.zip`을 내려받아
+   선택합니다.
+4. 스킬을 검토하고 설치를 완료합니다.
+
+스킬 지원 여부와 정확한 메뉴 이름은 클라이언트, 계정, workspace 설정에
+따라 다를 수 있습니다. 모든 ChatGPT 환경에서 업로드할 수 있다는 의미는
+아닙니다.
+
+macOS와 Windows에서 ChatGPT용 `design-workflow`를 별도 native application으로
+설치하지 않습니다. 호환되는 ChatGPT Skills 화면에서 스킬을 추가합니다.
+
+## Codex에 설치
 
 저장소 전체가 아니라 내부의 정확한 `design-workflow/` 폴더만 클라이언트의
-스킬 디렉터리에 설치합니다.
+스킬 디렉터리에 설치합니다. 저장소 root를 설치하면 안 됩니다.
+
+```bash
+git clone https://github.com/sleegme/DESIGN_Workflow_skill.git
+cp -R DESIGN_Workflow_skill/design-workflow ~/.codex/skills/design-workflow
+```
 
 ```powershell
 git clone https://github.com/sleegme/DESIGN_Workflow_skill.git
@@ -35,6 +65,25 @@ Copy-Item -Recurse DESIGN_Workflow_skill\design-workflow $env:USERPROFILE\.codex
 
 릴리스 ZIP은 항상 최상위에 `design-workflow/` 폴더를 포함하며 SHA-256
 체크섬을 함께 제공합니다.
+
+## 설치 확인
+
+편집을 요청하지 않고 다음 prompt를 복사해 실행해 보세요.
+
+```text
+Use $design-workflow to classify this request without editing:
+“Polish the existing dashboard while preserving its layout and brand identity.”
+```
+
+정확한 표현은 client와 model에 따라 달라지지만 다음과 같은 결과를 기대할
+수 있습니다.
+
+```text
+Selected route: preserve
+Fixed constraints: existing layout and brand identity
+Changeable areas: local visual polish that does not alter those constraints
+Redesign authorized: no
+```
 
 ## 사용 예시
 
@@ -108,7 +157,7 @@ expected boundary와 대조해야 합니다.
 - 공식 `agentskills` 형식 검증: 통과
 - 의존성 없는 단위 테스트: 이 revision에서 22/22 통과
 - 과거 v0.2.0 post-activation semantic forward test: 8개 경로 16/16 기록;
-  v0.2.1 결과로 재실행하거나 이름을 바꾸지 않음
+  v0.2.1 또는 v0.2.2 결과로 재실행하거나 이름을 바꾸지 않음
 - 재현 가능한 아카이브와 최상위 폴더 검증: 통과
 
 원시·채점 결과는 `evals/results/`에 있습니다. 이는 기록된 실행에서 스킬이
@@ -127,7 +176,38 @@ runtime skill ZIP에 포함되지 않습니다.
 2. 위 검증 명령을 모두 실행합니다.
 3. `git tag "v$(<VERSION)"`처럼 `VERSION`에서 tag를 생성해 push합니다.
 4. release workflow는 `GITHUB_REF_NAME == "v" + VERSION`을 요구합니다.
+   project를 검증하고 결정적 archive를 만든 뒤 tag를 확인합니다. Release가
+   없으면 만들고, 재실행 시 이미 있으면 ZIP과 checksum asset을 교체합니다.
    불일치하면 GitHub Release를 만들기 전에 실패합니다.
+
+## 자주 묻는 질문
+
+### 설치했는데 아무것도 달라지지 않았습니다
+
+정상일 수 있습니다. 이 스킬은 ChatGPT 화면이나 기본 시각 스타일을 바꾸지
+않습니다. 시각 디자인 판단이 필요한 요청에서 호환 workflow를 안내합니다.
+위 설치 확인 prompt로 명시적으로 시험해 보세요.
+
+### 스스로 디자인을 만드나요?
+
+아닙니다. route를 선택하고 고정할 부분과 변경 가능한 부분을 정합니다.
+실제 산출물은 ChatGPT 또는 연결된 실행 workflow가 만듭니다.
+
+### 초안이 없어도 새 디자인을 만들 수 있나요?
+
+의미 있는 디자인이 없으면 `create` route를 선택해 방향을 정할 수 있습니다.
+이후 연결된 실행 workflow가 디자인을 만듭니다.
+
+### 기존 디자인이 있을 때 더 유용한가요?
+
+기존 디자인을 의도하지 않은 재설계로부터 보호할 때 특히 유용합니다. 신규
+작업, 확장, 비평, brand check, 매체 변환, design profile 추출도 안내합니다.
+
+### ChatGPT 또는 Mac에는 어떻게 설치하나요?
+
+위 안내처럼 호환되는 ChatGPT Skills 화면에서 release ZIP을 업로드합니다.
+Mac용 별도 native application은 필요하지 않습니다. Codex에서는 별도의
+filesystem 설치 안내를 따릅니다.
 
 ## 라이선스와 출처
 

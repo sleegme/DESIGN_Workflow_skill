@@ -103,6 +103,9 @@ class ProjectTests(unittest.TestCase):
         self.assertIn("version=$(<VERSION)", release)
         self.assertIn('"$GITHUB_REF_NAME" != "v${version}"', release)
         self.assertIn('package_skill.py --version "$GITHUB_REF_NAME"', release)
+        self.assertIn('gh release view "$GITHUB_REF_NAME"', release)
+        self.assertIn('gh release upload "$GITHUB_REF_NAME"', release)
+        self.assertIn("--clobber", release)
 
     def test_project_archive_contains_source_without_git_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
