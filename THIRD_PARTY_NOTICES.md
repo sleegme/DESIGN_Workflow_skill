@@ -12,8 +12,9 @@ Source:
 - https://github.com/anthropics/skills
 - `skills/frontend-design/SKILL.md`
 
-Changes were made. The material was condensed, generalized, and limited to new
-design and explicit redesign workflows.
+Changes were made. The material was condensed, generalized across visual media,
+and integrated into `design-workflow/references/visual-direction.md` for new
+design, explicit redesign, and design-bearing translation workflows.
 
 ## Google Stitch Skills
 

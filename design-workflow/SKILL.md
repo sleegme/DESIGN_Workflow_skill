@@ -1,13 +1,13 @@
 ---
 name: design-workflow
-description: Route visual-design work and enforce change boundaries before a medium-specific skill or tool executes it. Use for creating, revising, extending, redesigning, critiquing, brand-checking, translating, or profiling interfaces, websites, documents, slides, images, video, print, and data visualizations when design judgment is required. Preserve an established design by default and require explicit redesign authorization. Do not use for purely technical debugging, language translation, content-only edits, file conversion, or mechanical formatting with no design decision.
+description: Route visual-design work, enforce change boundaries, and supply positive visual judgment before a medium-specific skill or tool executes it. Use for creating, revising, extending, redesigning, critiquing, brand-checking, translating, or profiling interfaces, websites, documents, slides, images, video, print, and data visualizations when design judgment is required. Preserve an established design by default and require explicit redesign authorization. Do not use for purely technical debugging, language translation, content-only edits, file conversion, or mechanical formatting with no design decision.
 ---
 
 # Design Workflow
 
-Act as the intent-routing and change-boundary layer for visual work. Let the
-appropriate document, slide, image, design, browser, or code workflow perform the
-medium-specific execution.
+Act as the intent-routing, change-boundary, and visual-direction layer for visual
+work. Let the appropriate document, slide, image, design, browser, or code
+workflow perform the medium-specific execution.
 
 ## Core invariant
 
@@ -36,14 +36,22 @@ or *add* as local-change language. Do not interpret them as redesign permission.
    direction open. For ambiguous or high-impact work, start from
    [assets/route-contract.example.json](assets/route-contract.example.json)
    and run `python scripts/validate_route_contract.py <contract.json>`.
-5. **Load only the route-specific reference.** Follow the reference map below.
-6. **Execute through the right medium workflow.** Reuse the target project's
+5. **Load only the required references.** Follow the route and medium map below;
+   do not load every medium reference.
+6. **Set direction before generation.** For `create`, authorized `redesign`, and
+   design-bearing `translate`, resolve the compact direction in
+   [references/visual-direction.md](references/visual-direction.md). Keep it
+   internal unless showing it materially helps the user.
+7. **Execute through the right medium workflow.** Reuse the target project's
    components, templates, tokens, and tools. Do not replace a specialized
    artifact workflow with this routing skill.
-7. **Validate in context.** Compare the result with the change contract and the
+8. **Critique and repair exactly once when direction was required.** Use the
+   bounded pre-finalization pass in `visual-direction.md`; do not start an
+   open-ended refinement loop.
+9. **Validate in context.** Compare the result with the change contract and the
    source artifact. Fix unauthorized drift before finishing.
-8. **Report clearly.** State what changed, what stayed fixed, which evidence
-   governed the work, and what remains unverified.
+10. **Report clearly.** State what changed, what stayed fixed, which evidence
+   governed the work, the concrete critique repair, and what remains unverified.
 
 ## Routes
 
@@ -63,16 +71,33 @@ or *add* as local-change language. Do not interpret them as redesign permission.
 - For `preserve` and `expand`, read
   [references/preservation.md](references/preservation.md).
 - For `create`, read
-  [references/frontend-design.md](references/frontend-design.md).
-- For `redesign`, read both preservation and frontend-design references. List
-  the authorized replacements before generating alternatives.
+  [references/visual-direction.md](references/visual-direction.md), then the one
+  matching medium reference below when this map covers the active medium.
+- For `redesign`, read preservation and visual-direction, then the one matching
+  medium reference when covered below. List the authorized replacements before
+  generating.
 - For `critique` and `brand-check`, read
   [references/critique.md](references/critique.md).
 - For `translate`, read
-  [references/media-translation.md](references/media-translation.md).
+  [references/media-translation.md](references/media-translation.md). When the
+  translation requires visual generation or material recomposition, also read
+  visual-direction and exactly one applicable medium reference.
 - For `profile`, read
   [references/design-profile.md](references/design-profile.md) and use one
   template from [assets/](assets/).
+
+For these covered categories, load exactly the one matching medium reference for
+direction-bearing work. For `translate`, match the destination medium:
+
+- generated images, illustration, or photography-style work:
+  [references/generated-image-design.md](references/generated-image-design.md)
+- posters, card news, or social graphics:
+  [references/editorial-social-design.md](references/editorial-social-design.md)
+- web or interface composition:
+  [references/web-interface-design.md](references/web-interface-design.md)
+
+For another medium, apply the shared direction and the active specialist
+workflow without loading an unrelated medium reference.
 
 ## Evidence priority
 
