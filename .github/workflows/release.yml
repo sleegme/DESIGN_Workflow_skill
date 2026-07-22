@@ -35,13 +35,20 @@ jobs:
           fi
       - name: Build release archive
         run: python scripts/package_skill.py --version "$GITHUB_REF_NAME"
-      - name: Create verified GitHub Release
+      - name: Create or update verified GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create "$GITHUB_REF_NAME"
-          dist/design-workflow-*.zip
-          dist/design-workflow-*.zip.sha256
-          --verify-tag
-          --generate-notes
-          --title "design-workflow $GITHUB_REF_NAME"
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" \
+              dist/design-workflow-*.zip \
+              dist/design-workflow-*.zip.sha256 \
+              --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              dist/design-workflow-*.zip \
+              dist/design-workflow-*.zip.sha256 \
+              --verify-tag \
+              --generate-notes \
+              --title "design-workflow $GITHUB_REF_NAME"
+          fi

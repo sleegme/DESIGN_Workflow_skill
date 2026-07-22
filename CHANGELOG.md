@@ -2,6 +2,20 @@
 
 All notable changes are documented here.
 
+## [0.2.2] - 2026-07-22
+
+### Added
+
+- plain-language onboarding that explains what changes after installation and
+  separates ChatGPT upload from Codex filesystem installation
+- platform guidance, a copyable post-install verification prompt, an
+  illustrative route decision, and answers to common first-user questions
+
+### Changed
+
+- made tagged Release workflow reruns replace existing ZIP and checksum assets
+  instead of failing when the GitHub Release already exists
+
 ## [0.2.1] - 2026-07-20
 
 ### Added
