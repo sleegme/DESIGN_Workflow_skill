@@ -2,6 +2,41 @@
 
 All notable changes are documented here.
 
+## [0.3.0] - 2026-07-22
+
+### Added
+
+- compact pre-generation visual direction for `create`, authorized `redesign`,
+  and design-bearing `translate` work
+- system-level reference interpretation, concrete generic AI-design default
+  checks, and exactly one same-model critique and repair pass
+- selectively loaded guidance for generated images, editorial/social graphics,
+  and web/interface compositions
+- weak-to-strong examples covering rule extraction, subject-specific structure,
+  fixed information architecture, compact tool handoff, and flourish removal
+- a separate six-case design-quality suite, original visual reference fixture,
+  provenance schema, structural record grader, and external-client comparison
+  protocol
+
+### Changed
+
+- expanded the skill from change-boundary safety to both boundary safety and
+  positive design judgment without changing the eight-route contract
+- consolidated the prior medium-neutral `frontend-design.md` guidance into
+  `visual-direction.md` so shared rules are not duplicated across medium files
+- updated runtime metadata, project validation, source audit, documentation,
+  tests, and deterministic packaging for v0.3.0
+
+### Compatibility
+
+- preserves `meaningful_design_exists`, evidence priority, fixed/changeable
+  dimensions, analysis-only mutation boundaries, and unauthorized-drift
+  protection
+- retains the v0.2.2 onboarding, installation and expectation guidance, and
+  idempotent release-rerun behavior
+- real ChatGPT- and Gemini-class before/after visual evaluations remain external
+  client evidence and must not be inferred from structural graders
+
 ## [0.2.2] - 2026-07-22
 
 ### Added

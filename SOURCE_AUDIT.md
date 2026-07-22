@@ -1,7 +1,7 @@
 # Source and License Audit
 
-Audit date: 2026-07-20
-Release target: v0.2.1
+Audit date: 2026-07-22
+Release target: v0.3.0
 
 ## Repository license
 
@@ -15,9 +15,11 @@ The release archive retains `LICENSE`, `NOTICE`, and
 
 - Upstream: `anthropics/skills`, `skills/frontend-design/SKILL.md`
 - License: Apache-2.0
-- Adapted file: `design-workflow/references/frontend-design.md`
-- Modifications: condensed, generalized beyond frontend work, restricted to new
-  design and authorized redesign routes, and separated from preservation work
+- Adapted file: `design-workflow/references/visual-direction.md`
+- Modifications: condensed, generalized beyond frontend work, extended with
+  original reference-analysis and bounded-critique guidance, restricted to new
+  design, authorized redesign, and design-bearing translation routes, and
+  separated from preservation work
 - Compliance: license and notices retained; the adapted file carries a prominent
   modification notice
 
@@ -41,6 +43,8 @@ The release archive retains `LICENSE`, `NOTICE`, and
 - route-contract format and validator
 - evaluation fixtures, grading tool, project validator, tests, and packaging
   automation
+- v0.3.0 medium references, weak-to-strong examples, design-quality evaluation
+  cases, and the original abstract SVG evaluation fixture
 
 ## Excluded material
 
