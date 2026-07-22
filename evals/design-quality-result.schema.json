@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/sleegme/DESIGN_Workflow_skill/evals/design-quality-result.schema.json",
+  "title": "design-workflow design-quality evaluation record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "executed_at",
+    "commit_sha",
+    "skill_version",
+    "client",
+    "runner",
+    "model",
+    "reasoning_effort",
+    "suite_file",
+    "suite_revision",
+    "evaluator",
+    "cases"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{7,64}$"},
+    "skill_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:[-+][0-9A-Za-z.-]+)?$"},
+    "client": {"type": "string", "minLength": 1},
+    "runner": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "reasoning_effort": {"type": "string", "minLength": 1},
+    "suite_file": {"const": "evals/design-quality-cases.json"},
+    "suite_revision": {"type": "string", "minLength": 1},
+    "evaluator": {"type": "string", "minLength": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "baseline_artifact", "candidate_artifact", "observations"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "baseline_artifact": {"type": "string", "minLength": 1},
+          "candidate_artifact": {"type": "string", "minLength": 1},
+          "observations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["property", "result", "evidence"],
+              "properties": {
+                "property": {
+                  "enum": [
+                    "coherent_direction",
+                    "reference_rules_not_surface_copy",
+                    "generic_defaults_avoided_or_justified",
+                    "fixed_dimensions_preserved",
+                    "information_architecture_preserved",
+                    "bounded_critique_repair",
+                    "medium_constraints_applied",
+                    "realistic_specificity"
+                  ]
+                },
+                "result": {"enum": ["pass", "fail"]},
+                "evidence": {"type": "string", "minLength": 1}
+              }
+            }
+          },
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}

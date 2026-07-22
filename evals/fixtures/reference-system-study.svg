@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Original abstract editorial reference fixture</title>
+  <desc id="desc">An asymmetric cream poster with a concentrated black and vermilion focal cluster, repeated rules, and a deliberately quiet lower-right field.</desc>
+  <rect width="800" height="1000" fill="#eee5d7"/>
+  <rect x="72" y="72" width="36" height="590" fill="#171817"/>
+  <circle cx="226" cy="184" r="112" fill="#d94a2b"/>
+  <rect x="165" y="126" width="258" height="116" fill="#171817"/>
+  <g fill="#eee5d7" font-family="sans-serif" font-size="34" font-weight="700" letter-spacing="4">
+    <text x="188" y="174">FIELD</text>
+    <text x="188" y="216">STUDY 04</text>
+  </g>
+  <g stroke="#171817" stroke-width="3">
+    <line x1="165" y1="316" x2="666" y2="316"/>
+    <line x1="165" y1="372" x2="590" y2="372"/>
+    <line x1="165" y1="484" x2="666" y2="484"/>
+    <line x1="165" y1="540" x2="530" y2="540"/>
+    <line x1="165" y1="652" x2="666" y2="652"/>
+  </g>
+  <g fill="#171817" font-family="sans-serif" font-size="18" letter-spacing="2">
+    <text x="165" y="352">OBSERVE / RECORD</text>
+    <text x="165" y="520">COMPARE / MARK</text>
+    <text x="165" y="688">RETURN / REVISE</text>
+  </g>
+  <rect x="165" y="742" width="122" height="18" fill="#d94a2b"/>
+  <rect x="165" y="786" width="82" height="18" fill="#171817"/>
+</svg>

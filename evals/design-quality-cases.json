@@ -1,0 +1,106 @@
+[
+  {
+    "id": "DQ01",
+    "scenario": "image-no-reference",
+    "medium": "generated-image",
+    "prompt": "Create a documentary-style image of volunteer bicycle mechanics repairing commuters' bikes beneath an overpass at midnight. No visual reference is supplied. The scene should feel observed and specific, not futuristic or promotional.",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "redesign_authorized": false,
+    "fixed": ["documentary intent", "midnight overpass setting", "volunteer bicycle repair subject"],
+    "required_observations": [
+      "coherent_direction",
+      "generic_defaults_avoided_or_justified",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  },
+  {
+    "id": "DQ02",
+    "scenario": "image-with-reference",
+    "medium": "generated-image",
+    "prompt": "Use the attached reference only as design evidence for a portrait-oriented photograph of a coastal geology field survey. Extract transferable composition and rhythm rules; do not copy its red disc, exact typography, labels, or graphic shapes.",
+    "reference_fixture": "evals/fixtures/reference-system-study.svg",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "redesign_authorized": false,
+    "fixed": ["coastal geology survey subject", "portrait orientation", "photographic result"],
+    "required_observations": [
+      "coherent_direction",
+      "reference_rules_not_surface_copy",
+      "generic_defaults_avoided_or_justified",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  },
+  {
+    "id": "DQ03",
+    "scenario": "poster-card-news",
+    "medium": "editorial-social",
+    "prompt": "Create a five-frame 1080 x 1350 px card-news sequence explaining how a neighborhood cooling center works during a heat wave. Frame one is the cover; frames two through five explain eligibility, what to bring, hours, and the final action. It must remain clear in a mobile feed.",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "redesign_authorized": false,
+    "fixed": ["five frames", "1080 x 1350 px per frame", "specified content order"],
+    "required_observations": [
+      "coherent_direction",
+      "generic_defaults_avoided_or_justified",
+      "fixed_dimensions_preserved",
+      "information_architecture_preserved",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  },
+  {
+    "id": "DQ04",
+    "scenario": "redesign-fixed-dimensions",
+    "medium": "editorial-social",
+    "prompt": "Redesign this approved 1080 x 1350 px emergency-preparedness card from scratch visually. Keep the exact canvas dimensions, title, warning order, three instruction sections, legal line, and bottom-right CTA location. Replace only typography, palette, image treatment, spacing expression, and graphic language.",
+    "meaningful_design_exists": true,
+    "expected_route": "redesign",
+    "redesign_authorized": true,
+    "fixed": ["1080 x 1350 px canvas", "content and warning order", "three instruction sections", "legal line", "bottom-right CTA location"],
+    "required_observations": [
+      "coherent_direction",
+      "generic_defaults_avoided_or_justified",
+      "fixed_dimensions_preserved",
+      "information_architecture_preserved",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  },
+  {
+    "id": "DQ05",
+    "scenario": "web-interface",
+    "medium": "web-interface",
+    "prompt": "Design the first responsive web interface for a botanical specimen archive. Researchers need to scan specimens, compare provenance, filter by region and year, and open one record without losing comparison context. No existing visual design exists.",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "redesign_authorized": false,
+    "fixed": ["scan", "compare", "filter", "persistent comparison context"],
+    "required_observations": [
+      "coherent_direction",
+      "generic_defaults_avoided_or_justified",
+      "information_architecture_preserved",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  },
+  {
+    "id": "DQ06",
+    "scenario": "realistic-image",
+    "medium": "generated-image",
+    "prompt": "Generate a realistic waist-up photograph of an exhausted municipal electrician finishing a storm repair at dawn. Preserve weathered materials, wet clothing, uneven work light, credible posture, and an active street background. Do not idealize the worker or produce a beauty campaign.",
+    "meaningful_design_exists": false,
+    "expected_route": "create",
+    "redesign_authorized": false,
+    "fixed": ["waist-up framing", "municipal electrician", "storm repair at dawn", "realistic non-idealized treatment"],
+    "required_observations": [
+      "coherent_direction",
+      "generic_defaults_avoided_or_justified",
+      "realistic_specificity",
+      "bounded_critique_repair",
+      "medium_constraints_applied"
+    ]
+  }
+]
