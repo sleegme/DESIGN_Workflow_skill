@@ -13,10 +13,14 @@
 화면이 자동으로 바뀌지 않습니다. 실제 작업은 ChatGPT 또는 연결된 이미지,
 웹, 문서, 슬라이드, 디자인, 브라우저, 코드 실행 워크플로가 수행합니다.
 
-기술적으로 `design-workflow`는 routing과 change boundary를 관리하는
-guardrail입니다. 실행 도구가 작업하기 전에 요청을 보존, 개선, 확장, 신규
-제작 또는 명시적 재설계로 분류합니다. 핵심 원칙은 하나입니다. 의미 있는
-기존 디자인은 사용자가 교체를 명확히 승인하기 전까지 보존합니다.
+기술적으로 `design-workflow`는 routing, change boundary guardrail, 간결한
+긍정적 디자인 판단을 제공하는 Agent Skill입니다. 실행 도구가 작업하기 전에
+요청을 보존, 개선, 확장, 신규 제작 또는 명시적 재설계로 분류합니다. 핵심
+원칙은 하나입니다. 의미 있는 기존 디자인은 사용자가 교체를 명확히
+승인하기 전까지 보존합니다. v0.3.0은 새 디자인, 승인된 재설계, 디자인
+판단이 필요한 매체 변환에서 생성 전 방향 설정, reference system 규칙 추출,
+일반적인 AI 디자인 기본값 점검, 한 번으로 제한된 critique와 repair도
+적용합니다.
 
 ## 지원 경로
 
@@ -136,6 +140,16 @@ fixture 정합성, 패키지 allowlist와 재현 가능한 ZIP을 검사하며 �
 python scripts/grade_semantic_results.py path/to/client-result.json
 ```
 
+긍정적 시각 생성 행동은 별도의 `evals/design-quality-cases.json` suite로
+평가합니다. 같은 실제 client와 model에서 skill 미사용 baseline과 skill 사용
+candidate를 실행하고 두 artifact를 보존한 뒤, 독립 reviewer가 구체적 증거를
+기록합니다.
+
+```bash
+python scripts/grade_design_quality_results.py \
+  path/to/client-design-quality.raw.json
+```
+
 스킬 activation test는 모델과 클라이언트에 따라 비결정적입니다.
 `evals/trigger-cases.json`은 반복 활성화 평가를 위한 균형 잡힌 긍정·근접
 부정 사례이며, 이를 정적 단위 테스트 결과로 과장하지 않습니다.
@@ -151,14 +165,19 @@ grader는 필드 완전성, route 일치, 실행자가 선언한 boundary 판정
 않습니다. 사람 또는 별도 모델이 근거와 안전하게 기록된 응답 일부를
 expected boundary와 대조해야 합니다.
 
+design-quality grader도 record 구조만 검사합니다. pixel을 보거나 보편적인
+미적 향상을 입증하지 않으며, 실제 visual artifact의 독립 검토가 필요합니다.
+
 ### 현재 검증 결과
 
 - 프로젝트·링크 검증: 통과
 - 공식 `agentskills` 형식 검증: 통과
-- 의존성 없는 단위 테스트: 이 revision에서 22/22 통과
+- 의존성 없는 단위 테스트: 이 revision에서 26/26 통과
 - 과거 v0.2.0 post-activation semantic forward test: 8개 경로 16/16 기록;
-  v0.2.1 또는 v0.2.2 결과로 재실행하거나 이름을 바꾸지 않음
+  v0.2.1, v0.2.2 또는 v0.3.0 결과로 재실행하거나 이름을 바꾸지 않음
 - 재현 가능한 아카이브와 최상위 폴더 검증: 통과
+- ChatGPT-class와 Gemini-class v0.3.0 전후 visual 평가: 외부 client 실행 대기;
+  구조 검사로 결과를 꾸며내지 않음
 
 원시·채점 결과는 `evals/results/`에 있습니다. 이는 기록된 실행에서 스킬이
 로드된 뒤의 라우팅을 보여주며, 모든 모델·클라이언트의 activation 정확도나

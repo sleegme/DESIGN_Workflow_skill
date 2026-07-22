@@ -10,8 +10,10 @@ from collections import Counter
 from pathlib import Path
 
 try:
+    from scripts import grade_design_quality_results
     from scripts import grade_semantic_results
 except ModuleNotFoundError:  # Direct execution puts scripts/ on sys.path.
+    import grade_design_quality_results  # type: ignore[no-redef]
     import grade_semantic_results  # type: ignore[no-redef]
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +53,10 @@ REQUIRED_PROJECT_FILES = {
     "evals/trigger-cases.json",
     "evals/semantic-smoke.json",
     "evals/semantic-result.schema.json",
+    "evals/design-quality-cases.json",
+    "evals/design-quality-result.schema.json",
+    "evals/fixtures/reference-system-study.svg",
+    "scripts/grade_design_quality_results.py",
     "scripts/grade_semantic_results.py",
     "scripts/package_project.py",
     "scripts/package_skill.py",
@@ -64,7 +70,10 @@ REQUIRED_SKILL_FILES = {
     "references/routing.md",
     "references/evidence-security.md",
     "references/preservation.md",
-    "references/frontend-design.md",
+    "references/visual-direction.md",
+    "references/generated-image-design.md",
+    "references/editorial-social-design.md",
+    "references/web-interface-design.md",
     "references/critique.md",
     "references/media-translation.md",
     "references/design-profile.md",
@@ -226,6 +235,120 @@ def validate_semantic_evidence() -> None:
         )
 
 
+def validate_design_quality_evidence() -> None:
+    suite = json.loads((ROOT / "evals/design-quality-cases.json").read_text(encoding="utf-8"))
+    require(isinstance(suite, list) and len(suite) >= 6, "need at least six design-quality cases")
+    required_scenarios = {
+        "image-no-reference",
+        "image-with-reference",
+        "poster-card-news",
+        "redesign-fixed-dimensions",
+        "web-interface",
+        "realistic-image",
+    }
+    allowed_media = {"generated-image", "editorial-social", "web-interface"}
+    allowed_observations = {
+        "coherent_direction",
+        "reference_rules_not_surface_copy",
+        "generic_defaults_avoided_or_justified",
+        "fixed_dimensions_preserved",
+        "information_architecture_preserved",
+        "bounded_critique_repair",
+        "medium_constraints_applied",
+        "realistic_specificity",
+    }
+    ids: set[str] = set()
+    scenarios: set[str] = set()
+    observations_seen: set[str] = set()
+    for case in suite:
+        required = {
+            "id",
+            "scenario",
+            "medium",
+            "prompt",
+            "meaningful_design_exists",
+            "expected_route",
+            "redesign_authorized",
+            "fixed",
+            "required_observations",
+        }
+        require(required <= case.keys(), f"design-quality case missing fields: {case}")
+        require(case["id"] not in ids, f"duplicate design-quality case id: {case['id']}")
+        ids.add(case["id"])
+        scenarios.add(case["scenario"])
+        require(case["medium"] in allowed_media, f"unknown design-quality medium: {case['id']}")
+        require(case["expected_route"] in ROUTES, f"unknown design-quality route: {case['id']}")
+        require(
+            isinstance(case["meaningful_design_exists"], bool),
+            f"invalid design-quality meaningful_design_exists: {case['id']}",
+        )
+        require(
+            isinstance(case["redesign_authorized"], bool),
+            f"invalid design-quality redesign authorization: {case['id']}",
+        )
+        if case["expected_route"] == "create":
+            require(
+                case["meaningful_design_exists"] is False,
+                f"design-quality create case has a meaningful design: {case['id']}",
+            )
+        if case["expected_route"] == "redesign":
+            require(
+                case["meaningful_design_exists"] is True,
+                f"design-quality redesign case lacks a meaningful design: {case['id']}",
+            )
+            require(
+                case["redesign_authorized"] is True,
+                f"design-quality redesign case lacks authorization: {case['id']}",
+            )
+        else:
+            require(
+                case["redesign_authorized"] is False,
+                f"non-redesign design-quality case authorizes redesign: {case['id']}",
+            )
+        required_observations = case["required_observations"]
+        require(
+            isinstance(required_observations, list) and required_observations,
+            f"design-quality observations must be a non-empty array: {case['id']}",
+        )
+        require(
+            len(required_observations) == len(set(required_observations)),
+            f"duplicate design-quality observation: {case['id']}",
+        )
+        require(
+            set(required_observations) <= allowed_observations,
+            f"unknown design-quality observation: {case['id']}",
+        )
+        observations_seen.update(required_observations)
+        if "reference_fixture" in case:
+            require(
+                (ROOT / case["reference_fixture"]).is_file(),
+                f"missing design-quality reference fixture: {case['reference_fixture']}",
+            )
+
+    require(scenarios == required_scenarios, f"design-quality scenario coverage differs: {scenarios}")
+    require(
+        observations_seen == allowed_observations,
+        f"design-quality observable coverage differs: {observations_seen}",
+    )
+
+    raw_paths = sorted((ROOT / "evals/results").glob("*-design-quality.raw.json"))
+    for raw_path in raw_paths:
+        graded_path = raw_path.with_name(raw_path.name.replace(".raw.json", ".json"))
+        require(graded_path.exists(), f"missing graded design-quality result for {raw_path.name}")
+        raw = json.loads(raw_path.read_text(encoding="utf-8"))
+        graded = json.loads(graded_path.read_text(encoding="utf-8"))
+        computed = grade_design_quality_results.grade(suite, raw)
+        require(
+            graded.get("summary") == computed["summary"],
+            f"graded design-quality summary is stale or inconsistent: {graded_path.name}",
+        )
+        require(
+            graded.get("requires_independent_visual_review") is True
+            and graded.get("supports_universal_aesthetic_claim") is False,
+            f"design-quality result overstates structural evidence: {graded_path.name}",
+        )
+
+
 def main() -> int:
     try:
         require(SKILL.is_dir(), "missing design-workflow skill directory")
@@ -244,6 +367,14 @@ def main() -> int:
             semantic_schema.get("properties", {}).get("schema_version", {}).get("const")
             == grade_semantic_results.SCHEMA_VERSION,
             "semantic result schema version disagrees with the grader",
+        )
+        design_quality_schema = json.loads(
+            (ROOT / "evals/design-quality-result.schema.json").read_text(encoding="utf-8")
+        )
+        require(
+            design_quality_schema.get("properties", {}).get("schema_version", {}).get("const")
+            == grade_design_quality_results.SCHEMA_VERSION,
+            "design-quality result schema version disagrees with the grader",
         )
 
         skill_files = [path.relative_to(ROOT).as_posix() for path in ROOT.rglob("SKILL.md")]
@@ -267,7 +398,7 @@ def main() -> int:
         for expected in ("display_name:", "short_description:", "default_prompt:", "$design-workflow"):
             require(expected in openai_yaml, f"agents/openai.yaml missing {expected}")
 
-        for adapted in ("references/frontend-design.md", "references/design-profile.md"):
+        for adapted in ("references/visual-direction.md", "references/design-profile.md"):
             text = (SKILL / adapted).read_text(encoding="utf-8")
             require("Source and modification notice" in text, f"missing source notice: {adapted}")
 
@@ -276,6 +407,7 @@ def main() -> int:
         validate_route_cases()
         validate_trigger_cases()
         validate_semantic_evidence()
+        validate_design_quality_evidence()
     except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError, ValidationError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

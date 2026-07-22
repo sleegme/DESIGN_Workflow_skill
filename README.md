@@ -14,11 +14,15 @@ output or change the ChatGPT interface. ChatGPT or another connected image,
 web, document, slide, design, browser, or code workflow performs the actual
 work.
 
-In technical terms, `design-workflow` is a routing and change-boundary
-guardrail. It classifies a request as preserving, improving, extending,
-creating, or explicitly redesigning an artifact before an execution tool takes
-over. Its central rule is simple: preserve a meaningful existing design unless
-the user clearly authorizes replacement.
+In technical terms, `design-workflow` is an Agent Skill that provides routing,
+change-boundary guardrails, and compact positive design judgment. It classifies
+a request as preserving, improving, extending, creating, or explicitly
+redesigning an artifact before an execution tool takes over. Its central rule is
+simple: preserve a meaningful existing design unless the user clearly
+authorizes replacement. For new design, authorized redesign, and design-bearing
+translation, v0.3.0 also establishes a coherent direction, interprets references
+as systems, checks generic AI-design defaults, and applies one bounded critique
+and repair pass.
 
 ## Routes
 
@@ -46,7 +50,7 @@ design-workflow-project/
 │   ├── LICENSE
 │   ├── NOTICE
 │   └── THIRD_PARTY_NOTICES.md
-├── evals/                       # route, trigger, and semantic smoke cases
+├── evals/                       # route/boundary and separate design-quality cases
 ├── VERSION                      # single release-version source of truth
 ├── scripts/                     # project validation, grading, and packaging
 ├── tests/                       # dependency-free unit tests
@@ -131,6 +135,11 @@ Add a billing-history screen that looks native to the current app.
 Replace the current visual direction, but keep the information architecture.
 ```
 
+```text
+Create a realistic repair-workshop photograph. Set a compact visual direction,
+use only the generated-image guidance, and report the single critique repair.
+```
+
 For ambiguous or high-impact work, the skill can create a route contract and
 validate it without third-party dependencies:
 
@@ -169,6 +178,16 @@ with:
 python scripts/grade_semantic_results.py path/to/client-result.json
 ```
 
+Positive visual-generation behavior uses the separate
+`evals/design-quality-cases.json` suite. Run matching no-skill and skill-enabled
+tasks in the same real client, retain both artifacts, have an independent
+reviewer record concrete evidence, and validate the record with:
+
+```bash
+python scripts/grade_design_quality_results.py \
+  path/to/client-design-quality.raw.json
+```
+
 Trigger/activation behavior is client- and model-dependent.
 `evals/trigger-cases.json` contains balanced positive and near-miss prompts for
 repeated client-specific activation tests; it is not a deterministic unit test.
@@ -184,14 +203,21 @@ boundary decision. It cannot independently infer that a response preserved the
 boundary. A person or separate model must review each rationale (and any safely
 recorded response excerpt) against the expected boundary.
 
+The design-quality grader is likewise a structural record check. It does not
+inspect pixels or establish universal aesthetic improvement. Its protocol and
+schema explicitly require independent visual review and preserve real
+ChatGPT-/Gemini-class comparisons as external client evidence.
+
 ### Current verification evidence
 
 - project and link validator: passed
 - official `agentskills` format validator: passed
-- dependency-free unit tests: 22/22 passed for this revision
+- dependency-free unit tests: 26/26 passed for this revision
 - historical v0.2.0 post-activation semantic forward test: 16/16 recorded across
-  all eight routes; it was not rerun or relabeled for v0.2.1 or v0.2.2
+  all eight routes; it was not rerun or relabeled for v0.2.1, v0.2.2, or v0.3.0
 - deterministic archive equality and root-directory checks: passed
+- ChatGPT-class and Gemini-class v0.3.0 before/after visual runs: pending external
+  client execution; no result is fabricated from structural checks
 
 The raw and graded forward-test records are stored in `evals/results/`. They
 demonstrate route selection after the skill was loaded in the recorded run; they

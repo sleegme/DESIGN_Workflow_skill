@@ -1,4 +1,4 @@
 interface:
   display_name: "Design Workflow"
-  short_description: "Route visual work without unintended redesigns"
-  default_prompt: "Use $design-workflow to classify this visual task, set the change boundary, and guide the appropriate execution workflow."
+  short_description: "Route visual work and guide coherent design decisions"
+  default_prompt: "Use $design-workflow to classify this visual task, set the change boundary and visual direction, and guide the appropriate execution workflow."

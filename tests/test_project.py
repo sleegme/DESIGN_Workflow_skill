@@ -25,6 +25,11 @@ class ProjectTests(unittest.TestCase):
                 names = archive.namelist()
             self.assertIn("design-workflow/SKILL.md", names)
             self.assertIn("design-workflow/agents/openai.yaml", names)
+            self.assertIn("design-workflow/references/visual-direction.md", names)
+            self.assertIn("design-workflow/references/generated-image-design.md", names)
+            self.assertIn("design-workflow/references/editorial-social-design.md", names)
+            self.assertIn("design-workflow/references/web-interface-design.md", names)
+            self.assertNotIn("design-workflow/references/frontend-design.md", names)
             self.assertTrue(all(name.startswith("design-workflow/") for name in names))
             self.assertFalse(any(name.endswith("README.md") for name in names))
 

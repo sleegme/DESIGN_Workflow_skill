@@ -59,7 +59,7 @@ def resolve_version(requested: str | None) -> str:
         return expected
     version = requested.removeprefix("v")
     if not VERSION_RE.fullmatch(version):
-        raise ValueError("--version must be a semantic version such as 0.2.1")
+        raise ValueError("--version must be a semantic version such as 1.2.3")
     if version != expected:
         raise ValueError(
             f"--version {version!r} does not match VERSION {expected!r}"
