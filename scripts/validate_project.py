@@ -205,11 +205,34 @@ def validate_route_cases() -> None:
         require(route in ROUTES, f"unknown route in {case['id']}: {route}")
         require(
             isinstance(case["meaningful_design_exists"], bool),
-            f"invalid meaningful_design_exists in {case['id']}",
+            f"{case['id']} meaningful_design_exists must be a bool",
+        )
+        require(
+            isinstance(case["mutates_artifact"], bool),
+            f"{case['id']} mutates_artifact must be a bool, got {type(case['mutates_artifact']).__name__}",
+        )
+        require(
+            isinstance(case["redesign_authorized"], bool),
+            f"{case['id']} redesign_authorized must be a bool, got {type(case['redesign_authorized']).__name__}",
         )
         counts[route] += 1
+        mutating_routes = {"preserve", "expand", "create", "redesign", "translate"}
+        non_mutating_routes = {"critique", "brand-check", "profile"}
+        if route in mutating_routes:
+            require(
+                case["mutates_artifact"] is True,
+                f"{case['id']} {route} route contract requires mutates_artifact: true",
+            )
+        elif route in non_mutating_routes:
+            require(
+                case["mutates_artifact"] is False,
+                f"{case['id']} {route} route contract requires mutates_artifact: false",
+            )
         if route == "redesign":
-            require(case["redesign_authorized"] is True, f"{case['id']} lacks redesign authorization")
+            require(
+                case["redesign_authorized"] is True,
+                f"{case['id']} {route} route contract requires redesign_authorized: true",
+            )
         if route == "create":
             require(
                 case["meaningful_design_exists"] is False,
@@ -220,8 +243,6 @@ def validate_route_cases() -> None:
                 case["meaningful_design_exists"] is True,
                 f"{case['id']} requires a meaningful existing design",
             )
-        if route in {"critique", "brand-check", "profile"}:
-            require(case["mutates_artifact"] is False, f"{case['id']} must not mutate design")
     require(all(counts[route] >= 5 for route in ROUTES), f"insufficient route coverage: {counts}")
 
 

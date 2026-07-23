@@ -128,6 +128,123 @@ class ProjectTests(unittest.TestCase):
             self.assertFalse(any("/.git/" in name or "/dist/" in name for name in names))
 
 
+def _base_routing_cases() -> list[dict[str, object]]:
+    """A synthetic routing-cases fixture that satisfies every existing invariant.
+
+    Each of the eight routes appears six times, with the field values that the
+    repository's own routing-cases.json already uses. The fixture is intentionally
+    self-contained so that the Issue #14 regression tests can mutate one field at
+    a time without reaching into the real committed fixture.
+    """
+    route_values: dict[str, dict[str, object]] = {
+        "preserve": {"meaningful_design_exists": True, "mutates_artifact": True, "redesign_authorized": False},
+        "expand": {"meaningful_design_exists": True, "mutates_artifact": True, "redesign_authorized": False},
+        "create": {"meaningful_design_exists": False, "mutates_artifact": True, "redesign_authorized": False},
+        "redesign": {"meaningful_design_exists": True, "mutates_artifact": True, "redesign_authorized": True},
+        "critique": {"meaningful_design_exists": True, "mutates_artifact": False, "redesign_authorized": False},
+        "brand-check": {"meaningful_design_exists": True, "mutates_artifact": False, "redesign_authorized": False},
+        "translate": {"meaningful_design_exists": True, "mutates_artifact": True, "redesign_authorized": False},
+        "profile": {"meaningful_design_exists": True, "mutates_artifact": False, "redesign_authorized": False},
+    }
+    cases: list[dict[str, object]] = []
+    for route, values in route_values.items():
+        for index in range(6):
+            cases.append(
+                {
+                    "id": f"{route.upper()[:3]}.{index}",
+                    "prompt": f"synthetic prompt {route} {index}",
+                    "expected_route": route,
+                    "basis": "synthetic basis",
+                    **values,
+                }
+            )
+    return cases
+
+
+class RouteCaseValidationTests(unittest.TestCase):
+    """Issue #14: route-case boolean fields and route contracts are strictly enforced."""
+
+    def _run_with_cases(self, cases: list[dict[str, object]]) -> None:
+        path = validate_project.ROOT / "evals" / "routing-cases.json"
+        backup = path.read_text(encoding="utf-8")
+        try:
+            path.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            validate_project.validate_route_cases()
+        finally:
+            path.write_text(backup, encoding="utf-8")
+
+    def _expect_failure(self, cases: list[dict[str, object]]) -> str:
+        path = validate_project.ROOT / "evals" / "routing-cases.json"
+        backup = path.read_text(encoding="utf-8")
+        try:
+            path.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError) as ctx:
+                validate_project.validate_route_cases()
+            return str(ctx.exception)
+        finally:
+            path.write_text(backup, encoding="utf-8")
+
+    def test_committed_routing_cases_fixture_is_valid(self) -> None:
+        validate_project.validate_route_cases()
+
+    def test_synthetic_base_fixture_is_valid(self) -> None:
+        self._run_with_cases(_base_routing_cases())
+
+    def test_string_mutates_artifact_is_rejected(self) -> None:
+        cases = _base_routing_cases()
+        cases[0]["mutates_artifact"] = "true"
+        message = self._expect_failure(cases)
+        self.assertIn(cases[0]["id"], message)
+        self.assertIn("mutates_artifact", message)
+        self.assertIn("bool", message)
+
+    def test_integer_mutates_artifact_is_rejected(self) -> None:
+        cases = _base_routing_cases()
+        cases[0]["mutates_artifact"] = 1
+        message = self._expect_failure(cases)
+        self.assertIn(cases[0]["id"], message)
+        self.assertIn("mutates_artifact", message)
+        self.assertIn("bool", message)
+
+    def test_string_redesign_authorized_is_rejected(self) -> None:
+        cases = _base_routing_cases()
+        cases[0]["redesign_authorized"] = "false"
+        message = self._expect_failure(cases)
+        self.assertIn(cases[0]["id"], message)
+        self.assertIn("redesign_authorized", message)
+        self.assertIn("bool", message)
+
+    def test_integer_redesign_authorized_is_rejected(self) -> None:
+        cases = _base_routing_cases()
+        cases[0]["redesign_authorized"] = 0
+        message = self._expect_failure(cases)
+        self.assertIn(cases[0]["id"], message)
+        self.assertIn("redesign_authorized", message)
+        self.assertIn("bool", message)
+
+    def test_mutating_routes_reject_mutates_artifact_false(self) -> None:
+        mutating = ["preserve", "expand", "create", "redesign", "translate"]
+        for route in mutating:
+            with self.subTest(route=route):
+                cases = _base_routing_cases()
+                target = next(case for case in cases if case["expected_route"] == route)
+                target["mutates_artifact"] = False
+                message = self._expect_failure(cases)
+                self.assertIn(target["id"], message)
+                self.assertIn(route, message)
+                self.assertIn("mutates_artifact", message)
+
+    def test_non_mutating_routes_reject_mutates_artifact_true(self) -> None:
+        non_mutating = ["critique", "brand-check", "profile"]
+        for route in non_mutating:
+            with self.subTest(route=route):
+                cases = _base_routing_cases()
+                target = next(case for case in cases if case["expected_route"] == route)
+                target["mutates_artifact"] = True
+                message = self._expect_failure(cases)
+                self.assertIn(target["id"], message)
+                self.assertIn(route, message)
+                self.assertIn("mutates_artifact", message)
 class SkillLinkBoundaryTests(unittest.TestCase):
     """Issue #15: local links must stay inside the packaged design-workflow/ tree."""
 
@@ -146,28 +263,28 @@ class SkillLinkBoundaryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             skill = self._make_skill(temp_dir)
             self._write_doc(skill, "references/routing.md", "[CHANGE](../../CHANGELOG.md)")
-            with self.assertRaisesRegex(validate_project.ValidationError, "references/routing.md.*\.\./\.\./CHANGELOG\.md"):
+            with self.assertRaisesRegex(validate_project.ValidationError, r"references/routing.md.*\.\./\.\./CHANGELOG\.md"):
                 validate_project.validate_links(skill)
 
     def test_rejects_deeper_traversal_escape(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             skill = self._make_skill(temp_dir)
             self._write_doc(skill, "references/deep/doc.md", "[ROOT](../../../README.md)")
-            with self.assertRaisesRegex(validate_project.ValidationError, "doc\.md.*\.\./\.\./\.\./README\.md"):
+            with self.assertRaisesRegex(validate_project.ValidationError, r"doc\.md.*\.\./\.\./\.\./README\.md"):
                 validate_project.validate_links(skill)
 
     def test_rejects_parent_escape_from_skill_root(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             skill = self._make_skill(temp_dir)
             self._write_doc(skill, "SKILL.md", "[CHANGE](../CHANGELOG.md)")
-            with self.assertRaisesRegex(validate_project.ValidationError, "SKILL\.md.*\.\./CHANGELOG\.md"):
+            with self.assertRaisesRegex(validate_project.ValidationError, r"SKILL\.md.*\.\./CHANGELOG\.md"):
                 validate_project.validate_links(skill)
 
     def test_rejects_absolute_filesystem_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             skill = self._make_skill(temp_dir)
             self._write_doc(skill, "SKILL.md", "[ABS](/etc/passwd)")
-            with self.assertRaisesRegex(validate_project.ValidationError, "SKILL\.md"):
+            with self.assertRaisesRegex(validate_project.ValidationError, r"SKILL\.md"):
                 validate_project.validate_links(skill)
 
     def test_accepts_valid_sibling_file(self) -> None:
