@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path, PurePosixPath
 
-from scripts import package_project, package_skill, validate_project
+from scripts import grade_design_quality_results, package_project, package_skill, validate_project
+
+RESULTS = validate_project.ROOT / "evals" / "results"
 
 
 class ProjectTests(unittest.TestCase):
@@ -123,6 +126,79 @@ class ProjectTests(unittest.TestCase):
             self.assertIn(f"{prefix}README.md", names)
             self.assertIn(f"{prefix}design-workflow/SKILL.md", names)
             self.assertFalse(any("/.git/" in name or "/dist/" in name for name in names))
+
+
+class GradedResultIntegrityTests(unittest.TestCase):
+    """Issue #13: per-case tampering must fail even when summary is unchanged."""
+
+    def test_validators_accept_untampered_committed_results(self) -> None:
+        validate_project.validate_semantic_evidence()
+        validate_project.validate_design_quality_evidence()
+
+    def test_semantic_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
+        graded_path = RESULTS / "v0.2.0-codex-forward-test.json"
+        backup = graded_path.read_text(encoding="utf-8")
+        try:
+            graded = json.loads(backup)
+            graded["cases"][0]["observed_route"] = "redesign"
+            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError):
+                validate_project.validate_semantic_evidence()
+        finally:
+            graded_path.write_text(backup, encoding="utf-8")
+
+    def test_design_quality_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
+        suite = json.loads(
+            (validate_project.ROOT / "evals" / "design-quality-cases.json").read_text(encoding="utf-8")
+        )
+        raw = {
+            "schema_version": "1.0",
+            "executed_at": "2026-07-22T12:00:00+09:00",
+            "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+            "skill_version": "0.3.0",
+            "client": "unit-test-client",
+            "runner": "unit-test",
+            "model": "fixture-model",
+            "reasoning_effort": "fixture",
+            "suite_file": "evals/design-quality-cases.json",
+            "suite_revision": "0123456789abcdef0123456789abcdef01234567",
+            "evaluator": "fixture-reviewer",
+            "cases": [
+                {
+                    "id": case["id"],
+                    "baseline_artifact": f"fixture://baseline/{case['id']}",
+                    "candidate_artifact": f"fixture://candidate/{case['id']}",
+                    "observations": [
+                        {
+                            "property": property_name,
+                            "result": "pass",
+                            "evidence": "Fixture evidence used only to test record structure.",
+                        }
+                        for property_name in case["required_observations"]
+                    ],
+                }
+                for case in suite
+            ],
+        }
+        graded = grade_design_quality_results.grade(suite, raw)
+        raw_name = "v0.3.0-unit-test-design-quality.raw.json"
+        graded_name = "v0.3.0-unit-test-design-quality.json"
+        raw_path = RESULTS / raw_name
+        graded_path = RESULTS / graded_name
+        try:
+            raw_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            validate_project.validate_design_quality_evidence()
+
+            tampered = json.loads(graded_path.read_text(encoding="utf-8"))
+            tampered["cases"][0]["baseline_artifact"] = "fixture://tampered/DQ01"
+            graded_path.write_text(json.dumps(tampered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError):
+                validate_project.validate_design_quality_evidence()
+        finally:
+            for path in (raw_path, graded_path):
+                if path.exists():
+                    path.unlink()
 
 
 if __name__ == "__main__":

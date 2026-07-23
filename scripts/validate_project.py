@@ -119,6 +119,50 @@ def validate_links() -> None:
                 )
 
 
+def require_graded_cases_match(
+    graded_path: Path,
+    graded: dict[str, object],
+    computed: dict[str, object],
+    verdict_critical: tuple[str, ...],
+) -> None:
+    """Compare a committed graded result to the grader's deterministic output.
+
+    Provenance and execution fields (runner, commit id, timing, client identity)
+    are pass-through echoes, not recomputed here, so they are never compared.
+    The ``cases`` array is the deterministic derived layer: every field the
+    committed record actually carries must agree with the recomputed grading,
+    and the verdict-driving fields must be present so a verdict tampered while
+    keeping ``summary`` identical cannot slip through.
+    """
+    require(isinstance(graded, dict), f"graded result is not an object: {graded_path.name}")
+    require(
+        graded.get("summary") == computed.get("summary"),
+        f"graded summary is stale or inconsistent: {graded_path.name}",
+    )
+    graded_cases = graded.get("cases")
+    computed_cases = computed.get("cases")
+    require(isinstance(graded_cases, list), f"graded result missing cases array: {graded_path.name}")
+    require(isinstance(computed_cases, list), "recomputed graded result missing cases array")
+    require(len(graded_cases) == len(computed_cases), f"graded case count differs: {graded_path.name}")
+    graded_ids = [str(case.get("id")) for case in graded_cases]
+    computed_ids = [str(case.get("id")) for case in computed_cases]
+    require(graded_ids == computed_ids, f"graded case ids/order differ: {graded_path.name}")
+    graded_by_id = {str(case.get("id")): case for case in graded_cases}
+    for case_id, computed_case in zip(computed_ids, computed_cases):
+        committed = graded_by_id[case_id]
+        for field in verdict_critical:
+            require(
+                field in committed,
+                f"{case_id} graded case missing verdict field {field!r}: {graded_path.name}",
+            )
+        for field, computed_value in computed_case.items():
+            if field in committed:
+                require(
+                    committed[field] == computed_value,
+                    f"{case_id} graded case field {field!r} disagrees with recomputed grading: {graded_path.name}",
+                )
+
+
 def validate_route_cases() -> None:
     cases = json.loads((ROOT / "evals/routing-cases.json").read_text(encoding="utf-8"))
     require(isinstance(cases, list) and len(cases) >= 40, "need at least 40 route cases")
@@ -229,9 +273,11 @@ def validate_semantic_evidence() -> None:
             f"semantic forward-test ids do not match the smoke suite: {raw_path.name}",
         )
         computed = grade_semantic_results.grade(suite, raw)
-        require(
-            graded.get("summary") == computed["summary"],
-            f"graded semantic summary is stale or inconsistent: {graded_path.name}",
+        require_graded_cases_match(
+            graded_path,
+            graded,
+            computed,
+            verdict_critical=("observed_route", "boundary_preserved", "pass"),
         )
 
 
@@ -338,9 +384,11 @@ def validate_design_quality_evidence() -> None:
         raw = json.loads(raw_path.read_text(encoding="utf-8"))
         graded = json.loads(graded_path.read_text(encoding="utf-8"))
         computed = grade_design_quality_results.grade(suite, raw)
-        require(
-            graded.get("summary") == computed["summary"],
-            f"graded design-quality summary is stale or inconsistent: {graded_path.name}",
+        require_graded_cases_match(
+            graded_path,
+            graded,
+            computed,
+            verdict_critical=("declared_pass", "observations"),
         )
         require(
             graded.get("requires_independent_visual_review") is True
