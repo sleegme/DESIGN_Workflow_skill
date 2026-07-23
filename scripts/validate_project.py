@@ -29,6 +29,8 @@ ROUTES = {
     "profile",
 }
 LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+EXTERNAL_SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
+WINDOWS_DRIVE_RE = re.compile(r"^[a-zA-Z]:[/\\]")
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION_RE = re.compile(r"^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$")
 
@@ -106,17 +108,37 @@ def parse_frontmatter(path: Path) -> tuple[dict[str, str], str]:
     return metadata, text[end + 5 :]
 
 
-def validate_links() -> None:
-    for path in SKILL.rglob("*.md"):
+def _is_external_link(target: str) -> bool:
+    if target.startswith("#"):
+        return True
+    if "://" in target:
+        return True
+    if not EXTERNAL_SCHEME_RE.match(target):
+        return False
+    return not WINDOWS_DRIVE_RE.match(target)
+
+
+def validate_links(skill_root: Path = SKILL) -> None:
+    skill_canonical = skill_root.resolve()
+    for path in skill_root.rglob("*.md"):
+        path_canonical = path.resolve()
+        if path_canonical != skill_canonical and skill_canonical not in path_canonical.parents:
+            continue
         for target in LINK_RE.findall(path.read_text(encoding="utf-8")):
-            if "://" in target or target.startswith("#"):
+            if _is_external_link(target):
                 continue
             clean = target.split("#", 1)[0]
-            if clean:
-                require(
-                    (path.parent / clean).resolve().exists(),
-                    f"broken link in {path.relative_to(ROOT)}: {target}",
+            if not clean:
+                continue
+            resolved = (path.parent / clean).resolve()
+            if resolved == skill_canonical or skill_canonical not in resolved.parents:
+                raise ValidationError(
+                    f"link escapes skill boundary in {path.relative_to(skill_root)}: {target}"
                 )
+            require(
+                resolved.exists(),
+                f"broken link in {path.relative_to(skill_root)}: {target}",
+            )
 
 
 def require_graded_cases_match(
