@@ -1,17 +1,20 @@
 {
   "runner": "three independent Codex forward-test agents",
-  "skill_revision": "v0.2.0-rc",
   "summary": {
     "passed": 16,
     "total": 16,
     "pass_rate": 1.0
   },
+  "requires_independent_boundary_review": true,
   "cases": [
     {
       "id": "S01",
       "expected_route": "preserve",
       "observed_route": "preserve",
+      "expected_boundary": "structure and identity remain fixed",
       "boundary_preserved": true,
+      "boundary_rationale": "Keep the dashboard structure and all unrelated styling unchanged while correcting only spacing inconsistencies and focus states.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Keep the dashboard structure and all unrelated styling unchanged while correcting only spacing inconsistencies and focus states."
     },
@@ -19,7 +22,10 @@
       "id": "S02",
       "expected_route": "preserve",
       "observed_route": "preserve",
+      "expected_boundary": "modernization remains local",
       "boundary_preserved": true,
+      "boundary_rationale": "Limit modernization to local refinements within the existing hierarchy, component library, and brand identity.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Limit modernization to local refinements within the existing hierarchy, component library, and brand identity."
     },
@@ -27,7 +33,10 @@
       "id": "S03",
       "expected_route": "expand",
       "observed_route": "expand",
+      "expected_boundary": "new screen inherits the existing system",
       "boundary_preserved": true,
+      "boundary_rationale": "Add billing history as a sibling screen that inherits the app's established components, patterns, and visual language.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Add billing history as a sibling screen that inherits the app's established components, patterns, and visual language."
     },
@@ -35,7 +44,10 @@
       "id": "S04",
       "expected_route": "expand",
       "observed_route": "expand",
+      "expected_boundary": "translate is secondary and campaign identity remains fixed",
       "boundary_preserved": true,
+      "boundary_rationale": "Treat the subway ad as a campaign extension, using translation secondarily to recompose the approved poster for placement constraints without replacing its identity.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Treat the subway ad as a campaign extension, using translation secondarily to recompose the approved poster for placement constraints without replacing its identity."
     },
@@ -43,7 +55,10 @@
       "id": "S05",
       "expected_route": "create",
       "observed_route": "create",
+      "expected_boundary": "establish a new direction from the brief",
       "boundary_preserved": true,
+      "boundary_rationale": "Establish the tool's first coherent visual direction from the brief because no meaningful existing design or identity evidence exists.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Establish the tool's first coherent visual direction from the brief because no meaningful existing design or identity evidence exists."
     },
@@ -51,7 +66,10 @@
       "id": "S06",
       "expected_route": "create",
       "observed_route": "create",
+      "expected_boundary": "content order remains fixed while visual language is new",
       "boundary_preserved": true,
+      "boundary_rationale": "Create a new visual system while treating the wireframe's content order as fixed and changing no structural sequencing.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Create a new visual system while treating the wireframe's content order as fixed and changing no structural sequencing."
     },
@@ -59,7 +77,10 @@
       "id": "S07",
       "expected_route": "redesign",
       "observed_route": "redesign",
+      "expected_boundary": "copy and information architecture remain fixed",
       "boundary_preserved": true,
+      "boundary_rationale": "Replace the visual language only while keeping all copy and information architecture fixed.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Replace the visual language only while keeping all copy and information architecture fixed."
     },
@@ -67,7 +88,10 @@
       "id": "S08",
       "expected_route": "redesign",
       "observed_route": "redesign",
+      "expected_boundary": "system replacement is explicitly authorized",
       "boundary_preserved": true,
+      "boundary_rationale": "A wholly new direction and design-system replacement are authorized, while content, behavior, accessibility, and platform constraints remain fixed unless separately approved.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "A wholly new direction and design-system replacement are authorized, while content, behavior, accessibility, and platform constraints remain fixed unless separately approved."
     },
@@ -75,7 +99,10 @@
       "id": "S09",
       "expected_route": "critique",
       "observed_route": "critique",
+      "expected_boundary": "analysis only",
       "boundary_preserved": true,
+      "boundary_rationale": "Diagnose scanability issues and recommend improvements without editing the onboarding screen.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Diagnose scanability issues and recommend improvements without editing the onboarding screen."
     },
@@ -83,7 +110,10 @@
       "id": "S10",
       "expected_route": "critique",
       "observed_route": "critique",
+      "expected_boundary": "comparison only",
       "boundary_preserved": true,
+      "boundary_rationale": "Compare the posters and recommend one while leaving both source files unchanged.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Compare the posters and recommend one while leaving both source files unchanged."
     },
@@ -91,7 +121,10 @@
       "id": "S11",
       "expected_route": "brand-check",
       "observed_route": "brand-check",
+      "expected_boundary": "evidence-based compliance audit only",
       "boundary_preserved": true,
+      "boundary_rationale": "Audit the deck against the supplied brand guide and token sheet without mutating it unless implementation is separately requested.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Audit the deck against the supplied brand guide and token sheet without mutating it unless implementation is separately requested."
     },
@@ -99,7 +132,10 @@
       "id": "S12",
       "expected_route": "brand-check",
       "observed_route": "brand-check",
+      "expected_boundary": "component library governs the audit",
       "boundary_preserved": true,
+      "boundary_rationale": "Audit only against the component library, reporting concrete inconsistencies without modifying any screen.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Audit only against the component library, reporting concrete inconsistencies without modifying any screen."
     },
@@ -107,7 +143,10 @@
       "id": "S13",
       "expected_route": "translate",
       "observed_route": "translate",
+      "expected_boundary": "identity and content meaning remain fixed",
       "boundary_preserved": true,
+      "boundary_rationale": "Recompose for 58 mm thermal-print constraints while preserving the receipt's brand identity, content meaning, and hierarchy.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Recompose for 58 mm thermal-print constraints while preserving the receipt's brand identity, content meaning, and hierarchy."
     },
@@ -115,7 +154,10 @@
       "id": "S14",
       "expected_route": "translate",
       "observed_route": "translate",
+      "expected_boundary": "same identity under video constraints",
       "boundary_preserved": true,
+      "boundary_rationale": "Adapt the approved slide's hierarchy and identity into a fifteen-second sequence without introducing an unauthorized visual redesign.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Adapt the approved slide's hierarchy and identity into a fifteen-second sequence without introducing an unauthorized visual redesign."
     },
@@ -123,7 +165,10 @@
       "id": "S15",
       "expected_route": "profile",
       "observed_route": "profile",
+      "expected_boundary": "document evidence without redesigning",
       "boundary_preserved": true,
+      "boundary_rationale": "Create DESIGN.md as documentation only, separating observed rules from inferences and explicitly marking uncertainty or conflicts.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Create DESIGN.md as documentation only, separating observed rules from inferences and explicitly marking uncertainty or conflicts."
     },
@@ -131,9 +176,13 @@
       "id": "S16",
       "expected_route": "profile",
       "observed_route": "profile",
+      "expected_boundary": "create one derived profile only",
       "boundary_preserved": true,
+      "boundary_rationale": "Generate only .design/PROFILE.md, prioritizing the brand guide over deck evidence and documenting unknowns without altering either source.",
+      "response_excerpt": "",
       "pass": true,
       "notes": "Generate only .design/PROFILE.md, prioritizing the brand guide over deck evidence and documenting unknowns without altering either source."
     }
-  ]
+  ],
+  "skill_revision": "v0.2.0-rc"
 }

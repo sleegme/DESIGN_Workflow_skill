@@ -123,16 +123,14 @@ def require_graded_cases_match(
     graded_path: Path,
     graded: dict[str, object],
     computed: dict[str, object],
-    verdict_critical: tuple[str, ...],
 ) -> None:
     """Compare a committed graded result to the grader's deterministic output.
 
     Provenance and execution fields (runner, commit id, timing, client identity)
     are pass-through echoes, not recomputed here, so they are never compared.
-    The ``cases`` array is the deterministic derived layer: every field the
-    committed record actually carries must agree with the recomputed grading,
-    and the verdict-driving fields must be present so a verdict tampered while
-    keeping ``summary`` identical cannot slip through.
+    The ``cases`` array is the deterministic derived layer: each committed case
+    must have exactly the same deterministic field set as the recomputed case,
+    and every deterministic value must agree.
     """
     require(isinstance(graded, dict), f"graded result is not an object: {graded_path.name}")
     require(
@@ -150,17 +148,17 @@ def require_graded_cases_match(
     graded_by_id = {str(case.get("id")): case for case in graded_cases}
     for case_id, computed_case in zip(computed_ids, computed_cases):
         committed = graded_by_id[case_id]
-        for field in verdict_critical:
-            require(
-                field in committed,
-                f"{case_id} graded case missing verdict field {field!r}: {graded_path.name}",
-            )
+        committed_keys = set(committed.keys())
+        computed_keys = set(computed_case.keys())
+        missing = computed_keys - committed_keys
+        extra = committed_keys - computed_keys
+        require(not missing, f"{case_id} graded case missing deterministic fields {sorted(missing)}: {graded_path.name}")
+        require(not extra, f"{case_id} graded case has unexpected fields {sorted(extra)}: {graded_path.name}")
         for field, computed_value in computed_case.items():
-            if field in committed:
-                require(
-                    committed[field] == computed_value,
-                    f"{case_id} graded case field {field!r} disagrees with recomputed grading: {graded_path.name}",
-                )
+            require(
+                committed[field] == computed_value,
+                f"{case_id} graded case field {field!r} disagrees with recomputed grading: {graded_path.name}",
+            )
 
 
 def validate_route_cases() -> None:
@@ -277,7 +275,6 @@ def validate_semantic_evidence() -> None:
             graded_path,
             graded,
             computed,
-            verdict_critical=("observed_route", "boundary_preserved", "pass"),
         )
 
 
@@ -388,7 +385,6 @@ def validate_design_quality_evidence() -> None:
             graded_path,
             graded,
             computed,
-            verdict_critical=("declared_pass", "observations"),
         )
         require(
             graded.get("requires_independent_visual_review") is True

@@ -6,7 +6,7 @@ import unittest
 import zipfile
 from pathlib import Path, PurePosixPath
 
-from scripts import grade_design_quality_results, package_project, package_skill, validate_project
+from scripts import grade_design_quality_results, grade_semantic_results, package_project, package_skill, validate_project
 
 RESULTS = validate_project.ROOT / "evals" / "results"
 
@@ -129,29 +129,45 @@ class ProjectTests(unittest.TestCase):
 
 
 class GradedResultIntegrityTests(unittest.TestCase):
-    """Issue #13: per-case tampering must fail even when summary is unchanged."""
+    """Issue #13: committed graded result cases must exactly match recomputed grading."""
 
-    def test_validators_accept_untampered_committed_results(self) -> None:
-        validate_project.validate_semantic_evidence()
-        validate_project.validate_design_quality_evidence()
+    def _semantic_suite(self) -> list[dict[str, object]]:
+        return json.loads(
+            (validate_project.ROOT / "evals" / "semantic-smoke.json").read_text(encoding="utf-8")
+        )
 
-    def test_semantic_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
-        graded_path = RESULTS / "v0.2.0-codex-forward-test.json"
-        backup = graded_path.read_text(encoding="utf-8")
-        try:
-            graded = json.loads(backup)
-            graded["cases"][0]["observed_route"] = "redesign"
-            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            with self.assertRaises(validate_project.ValidationError):
-                validate_project.validate_semantic_evidence()
-        finally:
-            graded_path.write_text(backup, encoding="utf-8")
-
-    def test_design_quality_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
-        suite = json.loads(
+    def _design_quality_suite(self) -> list[dict[str, object]]:
+        return json.loads(
             (validate_project.ROOT / "evals" / "design-quality-cases.json").read_text(encoding="utf-8")
         )
-        raw = {
+
+    def _semantic_complete_raw(self, suite: list[dict[str, object]]) -> dict[str, object]:
+        return {
+            "schema_version": "1.0",
+            "executed_at": "2026-07-22T12:00:00+09:00",
+            "commit_sha": "0123456789abcdef0123456789abcdef01234567",
+            "skill_version": "0.3.0",
+            "client": "unit-test-client",
+            "runner": "unit-test",
+            "model": "fixture-model",
+            "reasoning_effort": "fixture",
+            "suite_file": "evals/semantic-smoke.json",
+            "suite_revision": "0123456789abcdef0123456789abcdef01234567",
+            "cases": [
+                {
+                    "id": case["id"],
+                    "observed_route": case["expected_route"],
+                    "boundary_preserved": True,
+                    "boundary_rationale": "Fixture rationale used only to test record structure.",
+                    "response_excerpt": "",
+                    "notes": "",
+                }
+                for case in suite
+            ],
+        }
+
+    def _design_quality_complete_raw(self, suite: list[dict[str, object]]) -> dict[str, object]:
+        return {
             "schema_version": "1.0",
             "executed_at": "2026-07-22T12:00:00+09:00",
             "commit_sha": "0123456789abcdef0123456789abcdef01234567",
@@ -180,6 +196,49 @@ class GradedResultIntegrityTests(unittest.TestCase):
                 for case in suite
             ],
         }
+
+    def test_validators_accept_untampered_committed_results(self) -> None:
+        validate_project.validate_semantic_evidence()
+        validate_project.validate_design_quality_evidence()
+
+    def test_semantic_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
+        graded_path = RESULTS / "v0.2.0-codex-forward-test.json"
+        backup = graded_path.read_text(encoding="utf-8")
+        try:
+            graded = json.loads(backup)
+            graded["cases"][0]["observed_route"] = "redesign"
+            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError):
+                validate_project.validate_semantic_evidence()
+        finally:
+            graded_path.write_text(backup, encoding="utf-8")
+
+    def test_semantic_validator_detects_missing_deterministic_field(self) -> None:
+        suite = self._semantic_suite()
+        raw = self._semantic_complete_raw(suite)
+        graded = grade_semantic_results.grade(suite, raw)
+        raw_name = "v0.3.0-unit-test-forward-test.raw.json"
+        graded_name = "v0.3.0-unit-test-forward-test.json"
+        raw_path = RESULTS / raw_name
+        graded_path = RESULTS / graded_name
+        try:
+            raw_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            validate_project.validate_semantic_evidence()
+
+            tampered = json.loads(graded_path.read_text(encoding="utf-8"))
+            del tampered["cases"][0]["expected_boundary"]
+            graded_path.write_text(json.dumps(tampered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError):
+                validate_project.validate_semantic_evidence()
+        finally:
+            for path in (raw_path, graded_path):
+                if path.exists():
+                    path.unlink()
+
+    def test_design_quality_validator_detects_per_case_tampering_with_unchanged_summary(self) -> None:
+        suite = self._design_quality_suite()
+        raw = self._design_quality_complete_raw(suite)
         graded = grade_design_quality_results.grade(suite, raw)
         raw_name = "v0.3.0-unit-test-design-quality.raw.json"
         graded_name = "v0.3.0-unit-test-design-quality.json"
@@ -192,6 +251,29 @@ class GradedResultIntegrityTests(unittest.TestCase):
 
             tampered = json.loads(graded_path.read_text(encoding="utf-8"))
             tampered["cases"][0]["baseline_artifact"] = "fixture://tampered/DQ01"
+            graded_path.write_text(json.dumps(tampered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            with self.assertRaises(validate_project.ValidationError):
+                validate_project.validate_design_quality_evidence()
+        finally:
+            for path in (raw_path, graded_path):
+                if path.exists():
+                    path.unlink()
+
+    def test_design_quality_validator_detects_missing_deterministic_field(self) -> None:
+        suite = self._design_quality_suite()
+        raw = self._design_quality_complete_raw(suite)
+        graded = grade_design_quality_results.grade(suite, raw)
+        raw_name = "v0.3.0-unit-test-design-quality.raw.json"
+        graded_name = "v0.3.0-unit-test-design-quality.json"
+        raw_path = RESULTS / raw_name
+        graded_path = RESULTS / graded_name
+        try:
+            raw_path.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            graded_path.write_text(json.dumps(graded, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            validate_project.validate_design_quality_evidence()
+
+            tampered = json.loads(graded_path.read_text(encoding="utf-8"))
+            del tampered["cases"][0]["baseline_artifact"]
             graded_path.write_text(json.dumps(tampered, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
             with self.assertRaises(validate_project.ValidationError):
                 validate_project.validate_design_quality_evidence()
