@@ -245,6 +245,96 @@ class RouteCaseValidationTests(unittest.TestCase):
                 self.assertIn(target["id"], message)
                 self.assertIn(route, message)
                 self.assertIn("mutates_artifact", message)
+class SkillLinkBoundaryTests(unittest.TestCase):
+    """Issue #15: local links must stay inside the packaged design-workflow/ tree."""
+
+    def _make_skill(self, temp_dir: str) -> Path:
+        skill = Path(temp_dir) / "design-workflow"
+        skill.mkdir(parents=True)
+        return skill
+
+    def _write_doc(self, skill: Path, rel_path: str, content: str) -> Path:
+        doc = skill / rel_path
+        doc.parent.mkdir(parents=True, exist_ok=True)
+        doc.write_text(content, encoding="utf-8")
+        return doc
+
+    def test_rejects_grandparent_escape_from_nested_document(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "references/routing.md", "[CHANGE](../../CHANGELOG.md)")
+            with self.assertRaisesRegex(validate_project.ValidationError, r"references/routing.md.*\.\./\.\./CHANGELOG\.md"):
+                validate_project.validate_links(skill)
+
+    def test_rejects_deeper_traversal_escape(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "references/deep/doc.md", "[ROOT](../../../README.md)")
+            with self.assertRaisesRegex(validate_project.ValidationError, r"doc\.md.*\.\./\.\./\.\./README\.md"):
+                validate_project.validate_links(skill)
+
+    def test_rejects_parent_escape_from_skill_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "SKILL.md", "[CHANGE](../CHANGELOG.md)")
+            with self.assertRaisesRegex(validate_project.ValidationError, r"SKILL\.md.*\.\./CHANGELOG\.md"):
+                validate_project.validate_links(skill)
+
+    def test_rejects_absolute_filesystem_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "SKILL.md", "[ABS](/etc/passwd)")
+            with self.assertRaisesRegex(validate_project.ValidationError, r"SKILL\.md"):
+                validate_project.validate_links(skill)
+
+    def test_accepts_valid_sibling_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "routing.md", "routing")
+            self._write_doc(skill, "SKILL.md", "[routing](routing.md)")
+            validate_project.validate_links(skill)
+
+    def test_accepts_valid_nested_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "references/routing.md", "routing")
+            self._write_doc(skill, "SKILL.md", "[routing](references/routing.md)")
+            validate_project.validate_links(skill)
+
+    def test_accepts_valid_parent_relative_link_inside_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "assets/DESIGN.template.md", "template")
+            self._write_doc(skill, "references/design-profile.md", "[template](../assets/DESIGN.template.md)")
+            validate_project.validate_links(skill)
+
+    def test_accepts_valid_link_with_fragment(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "routing.md", "routing")
+            self._write_doc(skill, "SKILL.md", "[routing](routing.md#section)")
+            validate_project.validate_links(skill)
+
+    def test_accepts_fragment_only_link(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(skill, "SKILL.md", "[section](#section)")
+            validate_project.validate_links(skill)
+
+    def test_skips_external_urls_and_mailto(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skill = self._make_skill(temp_dir)
+            self._write_doc(
+                skill,
+                "SKILL.md",
+                "[external](https://example.com)\n"
+                "[mailto](mailto:foo@example.com)\n"
+                "[fragment](#section)\n",
+            )
+            validate_project.validate_links(skill)
+
+    def test_committed_skill_documents_continue_to_pass(self) -> None:
+        validate_project.validate_links(validate_project.SKILL)
 
 
 class GradedResultIntegrityTests(unittest.TestCase):
