@@ -88,7 +88,7 @@ class DesignQualityTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "evidence must be a non-empty string"):
             grade_design_quality_results.grade(self.suite, result)
 
-    def test_runtime_requires_selective_loading_and_one_repair_pass(self) -> None:
+    def test_direction_documents_pin_selective_loading_and_one_repair_pass(self) -> None:
         skill = (ROOT / "design-workflow/SKILL.md").read_text(encoding="utf-8")
         direction = (
             ROOT / "design-workflow/references/visual-direction.md"
